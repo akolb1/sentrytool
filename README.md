@@ -1,4 +1,4 @@
-# maptrans
+# sentrytool
 
 sentrytool is a Go library and command-line interface to Apache Sentry.
 
