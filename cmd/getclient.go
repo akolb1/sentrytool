@@ -14,8 +14,7 @@ func getClient() (sentryapi.SentryClientAPI, error) {
 	if component == "" {
 		return sentryapi.GetClient(sentryapi.PolicyProtocol,
 			host, port, component, user)
-	} else {
-		return sentryapi.GetClient(sentryapi.GenericPolicyProtocol,
-			host, port, component, user)
 	}
+	return sentryapi.GetClient(sentryapi.GenericPolicyProtocol,
+		host, port, component, user)
 }

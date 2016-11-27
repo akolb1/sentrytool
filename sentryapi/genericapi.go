@@ -22,38 +22,38 @@ import (
 )
 
 // TMPGenericProtocolFactory is a multiplexing protocol factory
-type TMPGenericProtocolFactory struct {
+type tMPGenericProtocolFactory struct {
 }
 
-func (p *TMPGenericProtocolFactory) GetProtocol(t thrift.TTransport) thrift.TProtocol {
+func (p *tMPGenericProtocolFactory) GetProtocol(t thrift.TTransport) thrift.TProtocol {
 	protocol := thrift.NewTBinaryProtocolTransport(t)
 	return thrift.NewTMultiplexedProtocol(protocol, sentryGenericProtocol)
 }
 
-type GenericSentryClient struct {
+type genericSentryClient struct {
 	component string
 	userName  string
 	transport thrift.TTransport
 	client    *sentry_generic_policy_service.SentryGenericPolicyServiceClient
 }
 
-func (c *GenericSentryClient) Close() {
+func (c *genericSentryClient) Close() {
 	c.transport.Close()
 }
 
-func getGenericClient(host string, port int, component string, user string) (*GenericSentryClient, error) {
+func getGenericClient(host string, port int, component string, user string) (*genericSentryClient, error) {
 	socket, err := thrift.NewTSocket(fmt.Sprintf("%s:%d", host, port))
 	if err != nil {
 		return nil, err
 	}
 	var transport thrift.TTransport = thrift.NewTBufferedTransport(socket, 1024)
-	protocolFactory := &TMPGenericProtocolFactory{}
+	protocolFactory := &tMPGenericProtocolFactory{}
 	client := sentry_generic_policy_service.NewSentryGenericPolicyServiceClientFactory(transport,
 		protocolFactory)
 	if err := transport.Open(); err != nil {
 		return nil, err
 	}
-	return &GenericSentryClient{
+	return &genericSentryClient{
 		userName:  user,
 		transport: transport,
 		client:    client,
@@ -61,7 +61,7 @@ func getGenericClient(host string, port int, component string, user string) (*Ge
 	}, nil
 }
 
-func (c *GenericSentryClient) CreateRole(name string) error {
+func (c *genericSentryClient) CreateRole(name string) error {
 	arg := sentry_generic_policy_service.NewTCreateSentryRoleRequest()
 	arg.RequestorUserName = c.userName
 	arg.Component = c.component
@@ -78,7 +78,7 @@ func (c *GenericSentryClient) CreateRole(name string) error {
 	return nil
 }
 
-func (c *GenericSentryClient) RemoveRole(name string) error {
+func (c *genericSentryClient) RemoveRole(name string) error {
 	arg := sentry_generic_policy_service.NewTDropSentryRoleRequest()
 	arg.RequestorUserName = c.userName
 	arg.Component = c.component
@@ -94,7 +94,7 @@ func (c *GenericSentryClient) RemoveRole(name string) error {
 	return nil
 }
 
-func (c *GenericSentryClient) ListRoleByGroup(group string) ([]string, error) {
+func (c *genericSentryClient) ListRoleByGroup(group string) ([]string, error) {
 	arg := sentry_generic_policy_service.NewTListSentryRolesRequest()
 	if group == "" {
 		arg.GroupName = nil

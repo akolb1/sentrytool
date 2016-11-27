@@ -42,7 +42,7 @@ func getRoles(cmd *cobra.Command,
 	}
 	sort.Strings(roles)
 
-	var match_regex *regexp.Regexp
+	var matchRegex *regexp.Regexp
 
 	if useMatcher {
 		match, _ := cmd.Flags().GetString(matchOpt)
@@ -52,7 +52,7 @@ func getRoles(cmd *cobra.Command,
 				return nil,
 					fmt.Errorf("invalid match expression: %s", err)
 			}
-			match_regex = r
+			matchRegex = r
 		}
 	}
 
@@ -60,7 +60,7 @@ func getRoles(cmd *cobra.Command,
 
 	for _, role := range roles {
 		// If match is specified, filter by matches
-		if match_regex != nil && !match_regex.MatchString(role) {
+		if matchRegex != nil && !matchRegex.MatchString(role) {
 			continue
 		}
 		result = append(result, role)

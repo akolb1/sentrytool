@@ -21,45 +21,40 @@ import (
 	"github.com/akolb1/sentrytool/sentryapi/thrift/sentry_policy_service"
 )
 
-const (
-	sentry_protocol         = "SentryPolicyService"
-	sentry_generic_protocol = "SentryGenericPolicyService"
-)
-
 // TMPProtocolFactory is a multiplexing protocol factory
-type TMPProtocolFactory struct {
+type tMPProtocolFactory struct {
 }
 
-func (p *TMPProtocolFactory) GetProtocol(t thrift.TTransport) thrift.TProtocol {
+func (p *tMPProtocolFactory) GetProtocol(t thrift.TTransport) thrift.TProtocol {
 	protocol := thrift.NewTBinaryProtocolTransport(t)
 	return thrift.NewTMultiplexedProtocol(protocol, sentryProtocol)
 }
 
-type SentryClient struct {
+type sentryClient struct {
 	userName  string
 	transport thrift.TTransport
 	client    *sentry_policy_service.SentryPolicyServiceClient
 }
 
-func (c *SentryClient) Close() {
+func (c *sentryClient) Close() {
 	c.transport.Close()
 }
 
-func getHiveClient(host string, port int, user string) (*SentryClient, error) {
+func getHiveClient(host string, port int, user string) (*sentryClient, error) {
 	socket, err := thrift.NewTSocket(fmt.Sprintf("%s:%d", host, port))
 	if err != nil {
 		return nil, err
 	}
 	var transport thrift.TTransport = thrift.NewTBufferedTransport(socket, 1024)
-	protocolFactory := &TMPProtocolFactory{}
+	protocolFactory := &tMPProtocolFactory{}
 	client := sentry_policy_service.NewSentryPolicyServiceClientFactory(transport, protocolFactory)
 	if err := transport.Open(); err != nil {
 		return nil, err
 	}
-	return &SentryClient{userName: user, transport: transport, client: client}, nil
+	return &sentryClient{userName: user, transport: transport, client: client}, nil
 }
 
-func (c *SentryClient) CreateRole(name string) error {
+func (c *sentryClient) CreateRole(name string) error {
 	arg := sentry_policy_service.NewTCreateSentryRoleRequest()
 	arg.RequestorUserName = c.userName
 	arg.RoleName = name
@@ -74,7 +69,7 @@ func (c *SentryClient) CreateRole(name string) error {
 	return nil
 }
 
-func (c *SentryClient) RemoveRole(name string) error {
+func (c *sentryClient) RemoveRole(name string) error {
 	arg := sentry_policy_service.NewTDropSentryRoleRequest()
 	arg.RequestorUserName = c.userName
 	arg.RoleName = name
@@ -88,7 +83,7 @@ func (c *SentryClient) RemoveRole(name string) error {
 	return nil
 }
 
-func (c *SentryClient) ListRoleByGroup(group string) ([]string, error) {
+func (c *sentryClient) ListRoleByGroup(group string) ([]string, error) {
 	arg := sentry_policy_service.NewTListSentryRolesRequest()
 	if group == "" {
 		arg.GroupName = nil

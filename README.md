@@ -1,6 +1,6 @@
 # sentrytool
 
-sentrytool is a Go library and command-line interface to Apache Sentry.
+sentrytool is a Go library and command-line interface to [Apache Sentry](http://sentry.apache.org/).
 
 The tool and library can be used to interface with non-kerberized Sentry daemon.
 
@@ -15,6 +15,5 @@ $ go get github.com/akolb1/sentrytool/sentryapi
 
 ## Usage & Example
 
-* [sentrytool](sentrytool.md)	 - Command-line interface to Apache Sentry
-* For API usage and examples, see
-[![GoDoc](https://godoc.org/github.com/akolb1/sentrytool/sentryapi?status.svg)](https://godoc.org/github.com/akolb1/sentrytool/sentryapi)
+* [sentrytool](sentrytool.md) - Command-line interface to Apache Sentry
+* [API](sentryapi/README.md) - API Usage and examples

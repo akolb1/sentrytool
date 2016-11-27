@@ -16,8 +16,12 @@ package sentryapi
 
 import "fmt"
 
+// ProtocolType is enum describing available Apache Sentry protocols. Currently Sentry supports
+// two protocols: old protocol and generic protocol.
 type ProtocolType int
 
+// PolicyProtocol is the legacy Sentry protocol
+// GenericPolicyProtocol is the generic Sentry protocol
 const (
 	PolicyProtocol ProtocolType = iota
 	GenericPolicyProtocol
@@ -38,14 +42,25 @@ func (pt ProtocolType) String() string {
 	return "unknownProtocol"
 }
 
-// SentryClientAPI is a generic Sentry client interface
+// SentryClientAPI is a generic Apache Sentry client interface.
 type SentryClientAPI interface {
+	// Close closes the client connection
 	Close()
+	// CreateRole creates a role with given name
 	CreateRole(name string) error
+	// RemoveRole removes role with given name
 	RemoveRole(name string) error
+	// ListRoleByGroup returns list of role names for a given group or all
+	// roles if group is nil
 	ListRoleByGroup(group string) ([]string, error)
 }
 
+// GetClient returns a Sentry client implementation
+//   protocol - legacy or generic
+//   host - server host
+//   port - server port
+//   component - Sentry component for generic protocol
+//   user - Sentry authorization user
 func GetClient(protocol ProtocolType, host string, port int,
 	component string, user string) (SentryClientAPI, error) {
 	switch protocol {
