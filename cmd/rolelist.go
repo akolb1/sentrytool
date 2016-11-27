@@ -16,29 +16,26 @@ package cmd
 
 import (
 	"fmt"
-	"sort"
 	"regexp"
+	"sort"
 
+	"github.com/akolb1/sentrytool/sentryapi"
 	"github.com/spf13/cobra"
 )
 
 // listCmd represents the list command
-var listCmd = &cobra.Command{
+var roleListCmd = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"ls"},
 	Short:   "list roles",
-	Long:    `list all roles.
+	Long: `list all roles.
 If optional '-m regexp' flag is specified, only list roles matching regexp.`,
-	Run:     listRoles,
+	Run: listRoles,
 }
 
-func getRoles(cmd *cobra.Command) ([]string, error) {
-	client, err := getClient()
-	if err != nil {
-		return nil, err
-	}
-	defer client.Close()
-
+func getRoles(cmd *cobra.Command,
+	useMatcher bool,
+	client sentryapi.SentryClientAPI) ([]string, error) {
 	roles, err := client.ListRoleByGroup("")
 	if err != nil {
 		return nil, err
@@ -47,13 +44,16 @@ func getRoles(cmd *cobra.Command) ([]string, error) {
 
 	var match_regex *regexp.Regexp
 
-	match, _ := cmd.Flags().GetString(matchOpt)
-	if match != "" {
-		r, err := regexp.Compile(match)
-		if err != nil {
-			return nil, fmt.Errorf("invalid match expression: %s", err)
+	if useMatcher {
+		match, _ := cmd.Flags().GetString(matchOpt)
+		if match != "" {
+			r, err := regexp.Compile(match)
+			if err != nil {
+				return nil,
+					fmt.Errorf("invalid match expression: %s", err)
+			}
+			match_regex = r
 		}
-		match_regex = r
 	}
 
 	result := make([]string, 0, len(roles))
@@ -68,8 +68,15 @@ func getRoles(cmd *cobra.Command) ([]string, error) {
 	return result, nil
 }
 
-func listRoles(cmd *cobra.Command, args []string) {
-	roles, err := getRoles(cmd)
+func listRoles(cmd *cobra.Command, _ []string) {
+	client, err := getClient()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer client.Close()
+
+	roles, err := getRoles(cmd, true, client)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -81,5 +88,6 @@ func listRoles(cmd *cobra.Command, args []string) {
 }
 
 func init() {
-	roleCmd.AddCommand(listCmd)
+	roleListCmd.Flags().StringP(matchOpt, "m", "", "regexp matching role")
+	roleCmd.AddCommand(roleListCmd)
 }

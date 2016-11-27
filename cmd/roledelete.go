@@ -17,6 +17,9 @@ package cmd
 import (
 	"fmt"
 
+	"log"
+	"strings"
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -30,17 +33,49 @@ var roleDeleteCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		client, err := getClient()
 		if err != nil {
-			fmt.Println(err)
-			return
+			log.Fatal(err)
 		}
 		defer client.Close()
 
 		verbose := viper.Get(verboseOpt).(bool)
-		for _, roleName := range args {
+
+		var existing_roles map[string]bool
+		roles := args
+		if len(roles) == 0 {
+			r, err := getRoles(cmd, true, client)
+			if err != nil {
+				log.Fatal(err)
+			}
+			roles = r
+		} else {
+			existing, err := getRoles(cmd, false, client)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			existing_roles = make(map[string]bool)
+			for _, role := range existing {
+				existing_roles[role] = true
+			}
+		}
+
+		for _, roleName := range roles {
+			if existing_roles != nil && !existing_roles[roleName] {
+				fmt.Println("role", roleName, "does not exist, skipping")
+				continue
+			}
+
+			force, _ := cmd.Flags().GetBool(forceOpt)
+			if !force && !askYN(fmt.Sprintf("delete '%s'? ", roleName)) {
+				continue
+			}
 			err = client.RemoveRole(roleName)
 			if err != nil {
 				fmt.Println(err)
 				continue
+			}
+			if existing_roles != nil {
+				existing_roles[roleName] = false
 			}
 			if verbose {
 				fmt.Println("removed role ", roleName)
@@ -49,6 +84,19 @@ var roleDeleteCmd = &cobra.Command{
 	},
 }
 
+func askYN(prompt string) bool {
+	var response string
+	fmt.Print(prompt)
+	_, err := fmt.Scanln(&response)
+	if err != nil {
+		return false
+	}
+	response = strings.ToLower(response)
+	return strings.HasPrefix(response, "y")
+}
+
 func init() {
+	roleDeleteCmd.Flags().StringP(matchOpt, "m", "", "regexp matching role")
+	roleDeleteCmd.Flags().BoolP(forceOpt, "", false, "force deletion")
 	roleCmd.AddCommand(roleDeleteCmd)
 }
