@@ -34,13 +34,30 @@ var roleCreateCmd = &cobra.Command{
 		}
 		defer client.Close()
 
+		// Get existing roles
+		roles, err := client.ListRoleByGroup("")
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		existingRoles := make(map[string]bool)
+		for _, role := range roles {
+			existingRoles[role] = true
+		}
+
 		verbose := viper.Get(verboseOpt).(bool)
 		for _, roleName := range args {
+			if existingRoles[roleName] {
+				fmt.Println("role", roleName, "already exist: not created")
+				continue
+			}
 			err = client.CreateRole(roleName)
 			if err != nil {
 				fmt.Println(err)
 				continue
 			}
+			existingRoles[roleName] = true
 			if verbose {
 				fmt.Println("created role ", roleName)
 			}

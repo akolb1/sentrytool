@@ -16,9 +16,7 @@ package cmd
 
 import (
 	"fmt"
-
 	"sort"
-
 	"regexp"
 
 	"github.com/spf13/cobra"
@@ -29,7 +27,8 @@ var listCmd = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"ls"},
 	Short:   "list roles",
-	Long:    `list all roles.`,
+	Long:    `list all roles.
+If optional '-m regexp' flag is specified, only list roles matching regexp.`,
 	Run:     listRoles,
 }
 
