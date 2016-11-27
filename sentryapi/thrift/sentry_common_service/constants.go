@@ -6,6 +6,7 @@ package sentry_common_service
 import (
 	"bytes"
 	"fmt"
+
 	"git.apache.org/thrift.git/lib/go/thrift"
 )
 

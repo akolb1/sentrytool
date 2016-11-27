@@ -23,17 +23,28 @@ import (
 
 // createCmd represents the create command
 var roleDeleteCmd = &cobra.Command{
-	Use:   "delete",
+	Use:     "delete",
 	Aliases: []string{"rm"},
-	Short: "delete Sentry roles",
-	Long:  `Delete Sentry roles.`,
+	Short:   "delete Sentry roles",
+	Long:    `delete Sentry roles.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		host := viper.Get(hostOpt).(string)
-		port := viper.Get(portOpt).(int)
-		user := viper.Get(userOpt).(string)
-		verbose := viper.Get(verboseOpt).(bool)
-		if err := roleDelete(host, port, user, verbose, args); err != nil {
+		client, err := getClient()
+		if err != nil {
 			fmt.Println(err)
+			return
+		}
+		defer client.Close()
+
+		verbose := viper.Get(verboseOpt).(bool)
+		for _, roleName := range args {
+			err = client.RemoveRole(roleName)
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+			if verbose {
+				fmt.Println("removed role ", roleName)
+			}
 		}
 	},
 }

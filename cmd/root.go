@@ -28,6 +28,7 @@ const (
 	hostOpt           = "host"
 	portOpt           = "port"
 	userOpt           = "username"
+	componentOpt      = "component"
 	verboseOpt        = "verbose"
 )
 
@@ -68,6 +69,7 @@ func init() {
 	RootCmd.PersistentFlags().StringP(hostOpt, "H", "localhost", "hostname for Sentry server")
 	RootCmd.PersistentFlags().IntP(portOpt, "P", defaultThriftPort, "port for Sentry server")
 	RootCmd.PersistentFlags().StringP(userOpt, "U", currentUser.Username, "user name")
+	RootCmd.PersistentFlags().StringP(componentOpt, "C", "", "sentry client component")
 	RootCmd.PersistentFlags().BoolP(verboseOpt, "v", false, "verbose mode")
 
 	// Bind flags to viper variables

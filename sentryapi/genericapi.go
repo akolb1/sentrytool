@@ -18,78 +18,84 @@ import (
 	"fmt"
 
 	"git.apache.org/thrift.git/lib/go/thrift"
-	"github.com/akolb1/sentrytool/sentryapi/thrift/sentry_policy_service"
+	"github.com/akolb1/sentrytool/sentryapi/thrift/sentry_generic_policy_service"
 )
 
-const (
-	sentry_protocol         = "SentryPolicyService"
-	sentry_generic_protocol = "SentryGenericPolicyService"
-)
-
-// TMPProtocolFactory is a multiplexing protocol factory
-type TMPProtocolFactory struct {
+// TMPGenericProtocolFactory is a multiplexing protocol factory
+type TMPGenericProtocolFactory struct {
 }
 
-func (p *TMPProtocolFactory) GetProtocol(t thrift.TTransport) thrift.TProtocol {
+func (p *TMPGenericProtocolFactory) GetProtocol(t thrift.TTransport) thrift.TProtocol {
 	protocol := thrift.NewTBinaryProtocolTransport(t)
-	return thrift.NewTMultiplexedProtocol(protocol, sentryProtocol)
+	return thrift.NewTMultiplexedProtocol(protocol, sentryGenericProtocol)
 }
 
-type SentryClient struct {
+type GenericSentryClient struct {
+	component string
 	userName  string
 	transport thrift.TTransport
-	client    *sentry_policy_service.SentryPolicyServiceClient
+	client    *sentry_generic_policy_service.SentryGenericPolicyServiceClient
 }
 
-func (c *SentryClient) Close() {
+func (c *GenericSentryClient) Close() {
 	c.transport.Close()
 }
 
-func getHiveClient(host string, port int, user string) (*SentryClient, error) {
+func getGenericClient(host string, port int, component string, user string) (*GenericSentryClient, error) {
 	socket, err := thrift.NewTSocket(fmt.Sprintf("%s:%d", host, port))
 	if err != nil {
 		return nil, err
 	}
 	var transport thrift.TTransport = thrift.NewTBufferedTransport(socket, 1024)
-	protocolFactory := &TMPProtocolFactory{}
-	client := sentry_policy_service.NewSentryPolicyServiceClientFactory(transport, protocolFactory)
+	protocolFactory := &TMPGenericProtocolFactory{}
+	client := sentry_generic_policy_service.NewSentryGenericPolicyServiceClientFactory(transport,
+		protocolFactory)
 	if err := transport.Open(); err != nil {
 		return nil, err
 	}
-	return &SentryClient{userName: user, transport: transport, client: client}, nil
+	return &GenericSentryClient{
+		userName:  user,
+		transport: transport,
+		client:    client,
+		component: component,
+	}, nil
 }
 
-func (c *SentryClient) CreateRole(name string) error {
-	arg := sentry_policy_service.NewTCreateSentryRoleRequest()
+func (c *GenericSentryClient) CreateRole(name string) error {
+	arg := sentry_generic_policy_service.NewTCreateSentryRoleRequest()
 	arg.RequestorUserName = c.userName
+	arg.Component = c.component
 	arg.RoleName = name
 	result, err := c.client.CreateSentryRole(arg)
 	if err != nil {
 		return fmt.Errorf("failed to create Sentry role %s: %s", name, err)
 	}
 
-	if result.GetStatus().GetValue() != 0 {
-		return fmt.Errorf("%s", result.GetStatus().Message)
+	if result.GetStatus().Value != 0 {
+		return fmt.Errorf("%s\n%s", result.GetStatus().Message,
+			*result.GetStatus().Stack)
 	}
 	return nil
 }
 
-func (c *SentryClient) RemoveRole(name string) error {
-	arg := sentry_policy_service.NewTDropSentryRoleRequest()
+func (c *GenericSentryClient) RemoveRole(name string) error {
+	arg := sentry_generic_policy_service.NewTDropSentryRoleRequest()
 	arg.RequestorUserName = c.userName
+	arg.Component = c.component
 	arg.RoleName = name
 	result, err := c.client.DropSentryRole(arg)
 	if err != nil {
 		return fmt.Errorf("failed to remove Sentry role %s: %s", name, err)
 	}
-	if result.GetStatus().GetValue() != 0 {
-		return fmt.Errorf("%s", result.GetStatus().Message)
+	if result.GetStatus().Value != 0 {
+		return fmt.Errorf("%s\n%s", result.GetStatus().Message,
+			*result.GetStatus().Stack)
 	}
 	return nil
 }
 
-func (c *SentryClient) ListRoleByGroup(group string) ([]string, error) {
-	arg := sentry_policy_service.NewTListSentryRolesRequest()
+func (c *GenericSentryClient) ListRoleByGroup(group string) ([]string, error) {
+	arg := sentry_generic_policy_service.NewTListSentryRolesRequest()
 	if group == "" {
 		arg.GroupName = nil
 	} else {
@@ -97,13 +103,15 @@ func (c *SentryClient) ListRoleByGroup(group string) ([]string, error) {
 	}
 
 	arg.RequestorUserName = c.userName
+	arg.Component = c.component
 	result, err := c.client.ListSentryRolesByGroup(arg)
 	if err != nil {
 		return nil, fmt.Errorf("failed to list Sentry roles: %s", err)
 	}
 
-	if result.GetStatus().GetValue() != 0 {
-		return nil, fmt.Errorf("%s", result.GetStatus().Message)
+	if result.GetStatus().Value != 0 {
+		return nil, fmt.Errorf("%s\n%s", result.GetStatus().Message,
+			*result.GetStatus().Stack)
 	}
 	roles := make([]string, 0, 8)
 	for role := range result.Roles {

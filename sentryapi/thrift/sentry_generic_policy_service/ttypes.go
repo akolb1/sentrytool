@@ -6,9 +6,9 @@ package sentry_generic_policy_service
 import (
 	"bytes"
 	"fmt"
+
 	"git.apache.org/thrift.git/lib/go/thrift"
 	"github.com/akolb1/sentrytool/sentryapi/thrift/sentry_common_service"
-	"github.com/akolb1/sentrytool/sentryapi/thrift/sentry_policy_service"
 )
 
 // (needed to ensure safety because of naive import list construction.)
@@ -17,7 +17,8 @@ var _ = fmt.Printf
 var _ = bytes.Equal
 
 var _ = sentry_common_service.GoUnusedProtection__
-var _ = sentry_policy_service.GoUnusedProtection__
+
+// var _ = sentry_policy_service.GoUnusedProtection__
 var GoUnusedProtection__ int
 
 type TSentryGrantOption int64
@@ -67,7 +68,7 @@ func (p *TSentryGrantOption) UnmarshalText(text []byte) error {
 	return nil
 }
 
-type TSentryResponseStatus *sentry_common_service.TSentryResponseStatus
+type TSentryResponseStatus sentry_common_service.TSentryResponseStatus
 
 func TSentryResponseStatusPtr(v TSentryResponseStatus) *TSentryResponseStatus { return &v }
 
@@ -804,16 +805,16 @@ func (p *TCreateSentryRoleRequest) String() string {
 // Attributes:
 //  - Status
 type TCreateSentryRoleResponse struct {
-	Status *TSentryResponseStatus `thrift:"status,1,required" json:"status"`
+	Status *sentry_common_service.TSentryResponseStatus `thrift:"status,1,required" json:"status"`
 }
 
 func NewTCreateSentryRoleResponse() *TCreateSentryRoleResponse {
 	return &TCreateSentryRoleResponse{}
 }
 
-var TCreateSentryRoleResponse_Status_DEFAULT TSentryResponseStatus
+var TCreateSentryRoleResponse_Status_DEFAULT sentry_common_service.TSentryResponseStatus
 
-func (p *TCreateSentryRoleResponse) GetStatus() TSentryResponseStatus {
+func (p *TCreateSentryRoleResponse) GetStatus() sentry_common_service.TSentryResponseStatus {
 	if !p.IsSetStatus() {
 		return TCreateSentryRoleResponse_Status_DEFAULT
 	}
@@ -1128,16 +1129,16 @@ func (p *TDropSentryRoleRequest) String() string {
 // Attributes:
 //  - Status
 type TDropSentryRoleResponse struct {
-	Status *TSentryResponseStatus `thrift:"status,1,required" json:"status"`
+	Status *sentry_common_service.TSentryResponseStatus `thrift:"status,1,required" json:"status"`
 }
 
 func NewTDropSentryRoleResponse() *TDropSentryRoleResponse {
 	return &TDropSentryRoleResponse{}
 }
 
-var TDropSentryRoleResponse_Status_DEFAULT TSentryResponseStatus
+var TDropSentryRoleResponse_Status_DEFAULT sentry_common_service.TSentryResponseStatus
 
-func (p *TDropSentryRoleResponse) GetStatus() TSentryResponseStatus {
+func (p *TDropSentryRoleResponse) GetStatus() sentry_common_service.TSentryResponseStatus {
 	if !p.IsSetStatus() {
 		return TDropSentryRoleResponse_Status_DEFAULT
 	}
@@ -1513,16 +1514,16 @@ func (p *TAlterSentryRoleAddGroupsRequest) String() string {
 // Attributes:
 //  - Status
 type TAlterSentryRoleAddGroupsResponse struct {
-	Status *TSentryResponseStatus `thrift:"status,1,required" json:"status"`
+	Status *sentry_common_service.TSentryResponseStatus `thrift:"status,1,required" json:"status"`
 }
 
 func NewTAlterSentryRoleAddGroupsResponse() *TAlterSentryRoleAddGroupsResponse {
 	return &TAlterSentryRoleAddGroupsResponse{}
 }
 
-var TAlterSentryRoleAddGroupsResponse_Status_DEFAULT TSentryResponseStatus
+var TAlterSentryRoleAddGroupsResponse_Status_DEFAULT sentry_common_service.TSentryResponseStatus
 
-func (p *TAlterSentryRoleAddGroupsResponse) GetStatus() TSentryResponseStatus {
+func (p *TAlterSentryRoleAddGroupsResponse) GetStatus() sentry_common_service.TSentryResponseStatus {
 	if !p.IsSetStatus() {
 		return TAlterSentryRoleAddGroupsResponse_Status_DEFAULT
 	}
@@ -1898,16 +1899,16 @@ func (p *TAlterSentryRoleDeleteGroupsRequest) String() string {
 // Attributes:
 //  - Status
 type TAlterSentryRoleDeleteGroupsResponse struct {
-	Status *TSentryResponseStatus `thrift:"status,1,required" json:"status"`
+	Status *sentry_common_service.TSentryResponseStatus `thrift:"status,1,required" json:"status"`
 }
 
 func NewTAlterSentryRoleDeleteGroupsResponse() *TAlterSentryRoleDeleteGroupsResponse {
 	return &TAlterSentryRoleDeleteGroupsResponse{}
 }
 
-var TAlterSentryRoleDeleteGroupsResponse_Status_DEFAULT TSentryResponseStatus
+var TAlterSentryRoleDeleteGroupsResponse_Status_DEFAULT sentry_common_service.TSentryResponseStatus
 
-func (p *TAlterSentryRoleDeleteGroupsResponse) GetStatus() TSentryResponseStatus {
+func (p *TAlterSentryRoleDeleteGroupsResponse) GetStatus() sentry_common_service.TSentryResponseStatus {
 	if !p.IsSetStatus() {
 		return TAlterSentryRoleDeleteGroupsResponse_Status_DEFAULT
 	}
@@ -2272,16 +2273,16 @@ func (p *TAlterSentryRoleGrantPrivilegeRequest) String() string {
 // Attributes:
 //  - Status
 type TAlterSentryRoleGrantPrivilegeResponse struct {
-	Status *TSentryResponseStatus `thrift:"status,1,required" json:"status"`
+	Status *sentry_common_service.TSentryResponseStatus `thrift:"status,1,required" json:"status"`
 }
 
 func NewTAlterSentryRoleGrantPrivilegeResponse() *TAlterSentryRoleGrantPrivilegeResponse {
 	return &TAlterSentryRoleGrantPrivilegeResponse{}
 }
 
-var TAlterSentryRoleGrantPrivilegeResponse_Status_DEFAULT TSentryResponseStatus
+var TAlterSentryRoleGrantPrivilegeResponse_Status_DEFAULT sentry_common_service.TSentryResponseStatus
 
-func (p *TAlterSentryRoleGrantPrivilegeResponse) GetStatus() TSentryResponseStatus {
+func (p *TAlterSentryRoleGrantPrivilegeResponse) GetStatus() sentry_common_service.TSentryResponseStatus {
 	if !p.IsSetStatus() {
 		return TAlterSentryRoleGrantPrivilegeResponse_Status_DEFAULT
 	}
@@ -2646,16 +2647,16 @@ func (p *TAlterSentryRoleRevokePrivilegeRequest) String() string {
 // Attributes:
 //  - Status
 type TAlterSentryRoleRevokePrivilegeResponse struct {
-	Status *TSentryResponseStatus `thrift:"status,1,required" json:"status"`
+	Status *sentry_common_service.TSentryResponseStatus `thrift:"status,1,required" json:"status"`
 }
 
 func NewTAlterSentryRoleRevokePrivilegeResponse() *TAlterSentryRoleRevokePrivilegeResponse {
 	return &TAlterSentryRoleRevokePrivilegeResponse{}
 }
 
-var TAlterSentryRoleRevokePrivilegeResponse_Status_DEFAULT TSentryResponseStatus
+var TAlterSentryRoleRevokePrivilegeResponse_Status_DEFAULT sentry_common_service.TSentryResponseStatus
 
-func (p *TAlterSentryRoleRevokePrivilegeResponse) GetStatus() TSentryResponseStatus {
+func (p *TAlterSentryRoleRevokePrivilegeResponse) GetStatus() sentry_common_service.TSentryResponseStatus {
 	if !p.IsSetStatus() {
 		return TAlterSentryRoleRevokePrivilegeResponse_Status_DEFAULT
 	}
@@ -3135,17 +3136,17 @@ func (p *TSentryRole) String() string {
 //  - Status
 //  - Roles
 type TListSentryRolesResponse struct {
-	Status *TSentryResponseStatus `thrift:"status,1,required" json:"status"`
-	Roles  map[*TSentryRole]bool  `thrift:"roles,2" json:"roles,omitempty"`
+	Status *sentry_common_service.TSentryResponseStatus `thrift:"status,1,required" json:"status"`
+	Roles  map[*TSentryRole]bool                        `thrift:"roles,2" json:"roles,omitempty"`
 }
 
 func NewTListSentryRolesResponse() *TListSentryRolesResponse {
 	return &TListSentryRolesResponse{}
 }
 
-var TListSentryRolesResponse_Status_DEFAULT TSentryResponseStatus
+var TListSentryRolesResponse_Status_DEFAULT sentry_common_service.TSentryResponseStatus
 
-func (p *TListSentryRolesResponse) GetStatus() TSentryResponseStatus {
+func (p *TListSentryRolesResponse) GetStatus() sentry_common_service.TSentryResponseStatus {
 	if !p.IsSetStatus() {
 		return TListSentryRolesResponse_Status_DEFAULT
 	}
@@ -3623,17 +3624,17 @@ func (p *TListSentryPrivilegesRequest) String() string {
 //  - Status
 //  - Privileges
 type TListSentryPrivilegesResponse struct {
-	Status     *TSentryResponseStatus     `thrift:"status,1,required" json:"status"`
-	Privileges map[*TSentryPrivilege]bool `thrift:"privileges,2" json:"privileges,omitempty"`
+	Status     *sentry_common_service.TSentryResponseStatus `thrift:"status,1,required" json:"status"`
+	Privileges map[*TSentryPrivilege]bool                   `thrift:"privileges,2" json:"privileges,omitempty"`
 }
 
 func NewTListSentryPrivilegesResponse() *TListSentryPrivilegesResponse {
 	return &TListSentryPrivilegesResponse{}
 }
 
-var TListSentryPrivilegesResponse_Status_DEFAULT TSentryResponseStatus
+var TListSentryPrivilegesResponse_Status_DEFAULT sentry_common_service.TSentryResponseStatus
 
-func (p *TListSentryPrivilegesResponse) GetStatus() TSentryResponseStatus {
+func (p *TListSentryPrivilegesResponse) GetStatus() sentry_common_service.TSentryResponseStatus {
 	if !p.IsSetStatus() {
 		return TListSentryPrivilegesResponse_Status_DEFAULT
 	}
@@ -4020,16 +4021,16 @@ func (p *TDropPrivilegesRequest) String() string {
 // Attributes:
 //  - Status
 type TDropPrivilegesResponse struct {
-	Status *TSentryResponseStatus `thrift:"status,1,required" json:"status"`
+	Status *sentry_common_service.TSentryResponseStatus `thrift:"status,1,required" json:"status"`
 }
 
 func NewTDropPrivilegesResponse() *TDropPrivilegesResponse {
 	return &TDropPrivilegesResponse{}
 }
 
-var TDropPrivilegesResponse_Status_DEFAULT TSentryResponseStatus
+var TDropPrivilegesResponse_Status_DEFAULT sentry_common_service.TSentryResponseStatus
 
-func (p *TDropPrivilegesResponse) GetStatus() TSentryResponseStatus {
+func (p *TDropPrivilegesResponse) GetStatus() sentry_common_service.TSentryResponseStatus {
 	if !p.IsSetStatus() {
 		return TDropPrivilegesResponse_Status_DEFAULT
 	}
@@ -4462,16 +4463,16 @@ func (p *TRenamePrivilegesRequest) String() string {
 // Attributes:
 //  - Status
 type TRenamePrivilegesResponse struct {
-	Status *TSentryResponseStatus `thrift:"status,1,required" json:"status"`
+	Status *sentry_common_service.TSentryResponseStatus `thrift:"status,1,required" json:"status"`
 }
 
 func NewTRenamePrivilegesResponse() *TRenamePrivilegesResponse {
 	return &TRenamePrivilegesResponse{}
 }
 
-var TRenamePrivilegesResponse_Status_DEFAULT TSentryResponseStatus
+var TRenamePrivilegesResponse_Status_DEFAULT sentry_common_service.TSentryResponseStatus
 
-func (p *TRenamePrivilegesResponse) GetStatus() TSentryResponseStatus {
+func (p *TRenamePrivilegesResponse) GetStatus() sentry_common_service.TSentryResponseStatus {
 	if !p.IsSetStatus() {
 		return TRenamePrivilegesResponse_Status_DEFAULT
 	}
@@ -5076,17 +5077,17 @@ func (p *TListSentryPrivilegesForProviderRequest) String() string {
 //  - Status
 //  - Privileges
 type TListSentryPrivilegesForProviderResponse struct {
-	Status     *TSentryResponseStatus `thrift:"status,1,required" json:"status"`
-	Privileges map[string]bool        `thrift:"privileges,2,required" json:"privileges"`
+	Status     *sentry_common_service.TSentryResponseStatus `thrift:"status,1,required" json:"status"`
+	Privileges map[string]bool                              `thrift:"privileges,2,required" json:"privileges"`
 }
 
 func NewTListSentryPrivilegesForProviderResponse() *TListSentryPrivilegesForProviderResponse {
 	return &TListSentryPrivilegesForProviderResponse{}
 }
 
-var TListSentryPrivilegesForProviderResponse_Status_DEFAULT TSentryResponseStatus
+var TListSentryPrivilegesForProviderResponse_Status_DEFAULT sentry_common_service.TSentryResponseStatus
 
-func (p *TListSentryPrivilegesForProviderResponse) GetStatus() TSentryResponseStatus {
+func (p *TListSentryPrivilegesForProviderResponse) GetStatus() sentry_common_service.TSentryResponseStatus {
 	if !p.IsSetStatus() {
 		return TListSentryPrivilegesForProviderResponse_Status_DEFAULT
 	}

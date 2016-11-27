@@ -17,37 +17,39 @@ package cmd
 import (
 	"fmt"
 
+	"sort"
+
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // listCmd represents the list command
 var listCmd = &cobra.Command{
-	Use:   "list",
+	Use:     "list",
 	Aliases: []string{"ls"},
-	Short: "list roles",
-	Long: `List all roles.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		host := viper.Get(hostOpt).(string)
-		port := viper.Get(portOpt).(int)
-		user := viper.Get(userOpt).(string)
-		if err := roleList(host, port, user); err != nil {
-			fmt.Println(err)
-		}
-	},
+	Short:   "list roles",
+	Long:    `list all roles.`,
+	Run:     listRoles,
+}
+
+func listRoles(cmd *cobra.Command, args []string) {
+	client, err := getClient()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer client.Close()
+
+	roles, err := client.ListRoleByGroup("")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	sort.Strings(roles)
+	for _, r := range roles {
+		fmt.Println(r)
+	}
 }
 
 func init() {
 	roleCmd.AddCommand(listCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// listCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// listCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-
 }

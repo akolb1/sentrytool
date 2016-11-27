@@ -6,6 +6,7 @@ package sentry_generic_policy_service
 import (
 	"bytes"
 	"fmt"
+
 	"git.apache.org/thrift.git/lib/go/thrift"
 	"github.com/akolb1/sentrytool/sentryapi/thrift/sentry_common_service"
 	"github.com/akolb1/sentrytool/sentryapi/thrift/sentry_policy_service"

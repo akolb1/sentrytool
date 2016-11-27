@@ -24,15 +24,26 @@ import (
 // createCmd represents the create command
 var roleCreateCmd = &cobra.Command{
 	Use:   "create",
-	Short: "Create Sentry roles",
-	Long:  `Create Sentry roles.`,
+	Short: "create Sentry roles",
+	Long:  `create Sentry roles.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		host := viper.Get(hostOpt).(string)
-		port := viper.Get(portOpt).(int)
-		user := viper.Get(userOpt).(string)
-		verbose := viper.Get(verboseOpt).(bool)
-		if err := roleCreate(host, port, user, verbose, args); err != nil {
+		client, err := getClient()
+		if err != nil {
 			fmt.Println(err)
+			return
+		}
+		defer client.Close()
+
+		verbose := viper.Get(verboseOpt).(bool)
+		for _, roleName := range args {
+			err = client.CreateRole(roleName)
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+			if verbose {
+				fmt.Println("created role ", roleName)
+			}
 		}
 	},
 }
