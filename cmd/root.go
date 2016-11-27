@@ -28,6 +28,7 @@ const (
 	hostOpt           = "host"
 	portOpt           = "port"
 	userOpt           = "username"
+	matchOpt          = "match"
 	componentOpt      = "component"
 	verboseOpt        = "verbose"
 )

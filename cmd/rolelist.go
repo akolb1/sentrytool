@@ -19,6 +19,8 @@ import (
 
 	"sort"
 
+	"regexp"
+
 	"github.com/spf13/cobra"
 )
 
@@ -31,20 +33,49 @@ var listCmd = &cobra.Command{
 	Run:     listRoles,
 }
 
-func listRoles(cmd *cobra.Command, args []string) {
+func getRoles(cmd *cobra.Command) ([]string, error) {
 	client, err := getClient()
 	if err != nil {
-		fmt.Println(err)
-		return
+		return nil, err
 	}
 	defer client.Close()
 
 	roles, err := client.ListRoleByGroup("")
 	if err != nil {
+		return nil, err
+	}
+	sort.Strings(roles)
+
+	var match_regex *regexp.Regexp
+
+	match, _ := cmd.Flags().GetString(matchOpt)
+	if match != "" {
+		r, err := regexp.Compile(match)
+		if err != nil {
+			return nil, fmt.Errorf("invalid match expression: %s", err)
+		}
+		match_regex = r
+	}
+
+	result := make([]string, 0, len(roles))
+
+	for _, role := range roles {
+		// If match is specified, filter by matches
+		if match_regex != nil && !match_regex.MatchString(role) {
+			continue
+		}
+		result = append(result, role)
+	}
+	return result, nil
+}
+
+func listRoles(cmd *cobra.Command, args []string) {
+	roles, err := getRoles(cmd)
+	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	sort.Strings(roles)
+
 	for _, r := range roles {
 		fmt.Println(r)
 	}

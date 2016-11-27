@@ -27,5 +27,6 @@ Multiple roles can be created or removed with a single command.`,
 }
 
 func init() {
+	roleCmd.Flags().StringP(matchOpt, "m", "", "regexp natching role")
 	RootCmd.AddCommand(roleCmd)
 }
