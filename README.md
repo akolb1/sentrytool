@@ -15,7 +15,6 @@ $ go get github.com/akolb1/sentrytool/sentryapi
 
 ## Usage & Example
 
-For command usage and examples see the
-[![GoDoc](https://godoc.org/github.com/akolb1/sentrytool?status.svg)](https://godoc.org/github.com/akolb1/sentrytool)
-For API usage and examples, see
+* [sentrytool](sentrytool.md)	 - Command-line interface to Apache Sentry
+* For API usage and examples, see
 [![GoDoc](https://godoc.org/github.com/akolb1/sentrytool/sentryapi?status.svg)](https://godoc.org/github.com/akolb1/sentrytool/sentryapi)
