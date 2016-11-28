@@ -33,6 +33,8 @@ If optional '-m regexp' flag is specified, only list roles matching regexp.`,
 	Run: listRoles,
 }
 
+// getRoles returns a list of Sentry roles from the server
+// if useMatcher is true, filters result according to '-m' flag
 func getRoles(cmd *cobra.Command,
 	useMatcher bool,
 	client sentryapi.SentryClientAPI) ([]string, error) {

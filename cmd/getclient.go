@@ -5,6 +5,11 @@ import (
 	"github.com/spf13/viper"
 )
 
+// getClient returns Sentry API client, extracting parameters like host and port
+// from viper.
+//
+// If component is specified, it uses Generic sentry protocol, otherwise it uses legacy
+// protocol
 func getClient() (sentryapi.SentryClientAPI, error) {
 	host := viper.Get(hostOpt).(string)
 	port := viper.Get(portOpt).(int)

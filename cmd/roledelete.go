@@ -29,60 +29,64 @@ var roleDeleteCmd = &cobra.Command{
 	Aliases: []string{"rm"},
 	Short:   "delete Sentry roles",
 	Long:    `delete Sentry roles.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		client, err := getClient()
+	Run:     roleDelete,
+}
+
+func roleDelete(cmd *cobra.Command, args []string) {
+	client, err := getClient()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer client.Close()
+
+	verbose := viper.Get(verboseOpt).(bool)
+
+	var existingRoles map[string]bool
+	roles := args
+	if len(roles) == 0 {
+		r, err := getRoles(cmd, true, client)
 		if err != nil {
 			log.Fatal(err)
 		}
-		defer client.Close()
+		roles = r
+	} else {
+		existing, err := getRoles(cmd, false, client)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		existingRoles = make(map[string]bool)
+		for _, role := range existing {
+			existingRoles[role] = true
+		}
+	}
 
-		verbose := viper.Get(verboseOpt).(bool)
-
-		var existingRoles map[string]bool
-		roles := args
-		if len(roles) == 0 {
-			r, err := getRoles(cmd, true, client)
-			if err != nil {
-				log.Fatal(err)
-			}
-			roles = r
-		} else {
-			existing, err := getRoles(cmd, false, client)
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-			existingRoles = make(map[string]bool)
-			for _, role := range existing {
-				existingRoles[role] = true
-			}
+	for _, roleName := range roles {
+		if existingRoles != nil && !existingRoles[roleName] {
+			fmt.Println("role", roleName, "does not exist, skipping")
+			continue
 		}
 
-		for _, roleName := range roles {
-			if existingRoles != nil && !existingRoles[roleName] {
-				fmt.Println("role", roleName, "does not exist, skipping")
-				continue
-			}
-
-			force, _ := cmd.Flags().GetBool(forceOpt)
-			if !force && !askYN(fmt.Sprintf("delete '%s'? ", roleName)) {
-				continue
-			}
-			err = client.RemoveRole(roleName)
-			if err != nil {
-				fmt.Println(err)
-				continue
-			}
-			if existingRoles != nil {
-				existingRoles[roleName] = false
-			}
-			if verbose {
-				fmt.Println("removed role ", roleName)
-			}
+		force, _ := cmd.Flags().GetBool(forceOpt)
+		if !force && !askYN(fmt.Sprintf("delete '%s'? ", roleName)) {
+			continue
 		}
-	},
+		err = client.RemoveRole(roleName)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+		if existingRoles != nil {
+			existingRoles[roleName] = false
+		}
+		if verbose {
+			fmt.Println("removed role ", roleName)
+		}
+	}
 }
 
+// askYN prompts a user for a yes/no answer and returns true if user replies
+// with anything starting with 'y'
 func askYN(prompt string) bool {
 	var response string
 	fmt.Print(prompt)

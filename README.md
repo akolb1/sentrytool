@@ -10,10 +10,9 @@ Standard `go get`:
 
 ```
 $ go get github.com/akolb1/sentrytool
-$ go get github.com/akolb1/sentrytool/sentryapi
 ```
 
 ## Usage & Example
 
-* [sentrytool](sentrytool.md) - Command-line interface to Apache Sentry
+* [sentrytool](doc/sentrytool.md) - Command-line interface to Apache Sentry
 * [API](sentryapi/README.md) - API Usage and examples

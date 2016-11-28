@@ -20,7 +20,6 @@ import (
 	"os/user"
 
 	"github.com/spf13/cobra"
-	// "github.com/spf13/cobra/doc"
 	"github.com/spf13/viper"
 )
 
@@ -53,7 +52,6 @@ See examples.`,
 // Execute adds all child commands to the root command sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
-	// doc.GenMarkdownTree(RootCmd, ".")
 	if err := RootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(-1)
