@@ -44,7 +44,25 @@ var RootCmd = &cobra.Command{
 	Use:   "sentrytool",
 	Short: "Command-line interface to Apache Sentry",
 	Long: `Command-line interface to Apache Sentry.
-See examples.`,
+See https://github.com/akolb1/sentrytool/blob/master/doc/sentrytool.md for full documentation
+
+Configuration:
+
+The tool can be configured using either command-line flags, environment variables or
+a config file. Config file may be in JSON, TOML, YAML, HCL, and
+Java properties config files format. B default the file ~/.sentrytool.yaml is used.
+
+ The following environment variables are used:
+
+SENTRY_HOST:      Sentry server host name or IP address ('host' in the config file)
+SENTRY_PORT:      Listening port for the Sentry server ('port' in the config file)
+SENTRY_USER:      User name on which behalf the request is made ('user' in the config file)
+SENTRY_COMPONENT: Component name (e.g. 'kafka'). ('component' in the config file)
+SENRY_VERBOSE:    Use verbose mode if set ('verbose' in config file)
+
+When a component is specified the tool uses Generic client model, otherwise it uses the
+legacy model.
+`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	//	Run: func(cmd *cobra.Command, args []string) { },

@@ -44,13 +44,13 @@ func roleDelete(cmd *cobra.Command, args []string) {
 	var existingRoles map[string]bool
 	roles := args
 	if len(roles) == 0 {
-		r, err := getRoles(cmd, true, client)
+		r, _, err := getRoles(cmd, true, client)
 		if err != nil {
 			log.Fatal(err)
 		}
 		roles = r
 	} else {
-		existing, err := getRoles(cmd, false, client)
+		existing, _, err := getRoles(cmd, false, client)
 		if err != nil {
 			fmt.Println(err)
 			return

@@ -19,8 +19,11 @@ import (
 	"regexp"
 	"sort"
 
+	"strings"
+
 	"github.com/akolb1/sentrytool/sentryapi"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // listCmd represents the list command
@@ -29,19 +32,23 @@ var roleListCmd = &cobra.Command{
 	Aliases: []string{"ls"},
 	Short:   "list roles",
 	Long: `list all roles.
-If optional '-m regexp' flag is specified, only list roles matching regexp.`,
+If optional '-m regexp' flag is specified, only list roles matching regexp.
+If '-g group' flag is specifiedm only list roles for the speecified group.
+In verbose mode prints groups for each role.`,
 	Run: listRoles,
 }
+
+type roleGroupMap map[string][]string
 
 // getRoles returns a list of Sentry roles from the server
 // if useMatcher is true, filters result according to '-m' flag
 func getRoles(cmd *cobra.Command,
 	useMatcher bool,
-	client sentryapi.ClientAPI) ([]string, error) {
+	client sentryapi.ClientAPI) ([]string, roleGroupMap, error) {
 	group, _ := cmd.Flags().GetString(groupOpt)
-	roles, _, err := client.ListRoleByGroup(group)
+	roles, roleGroups, err := client.ListRoleByGroup(group)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	sort.Strings(roles)
 
@@ -52,7 +59,7 @@ func getRoles(cmd *cobra.Command,
 		if match != "" {
 			r, err := regexp.Compile(match)
 			if err != nil {
-				return nil,
+				return nil, nil,
 					fmt.Errorf("invalid match expression: %s", err)
 			}
 			matchRegex = r
@@ -60,15 +67,17 @@ func getRoles(cmd *cobra.Command,
 	}
 
 	result := make([]string, 0, len(roles))
+	roleResult := make(roleGroupMap)
 
-	for _, role := range roles {
+	for _, role := range roleGroups {
 		// If match is specified, filter by matches
-		if matchRegex != nil && !matchRegex.MatchString(role) {
+		if matchRegex != nil && !matchRegex.MatchString(role.Name) {
 			continue
 		}
-		result = append(result, role)
+		result = append(result, role.Name)
+		roleResult[role.Name] = role.Groups
 	}
-	return result, nil
+	return result, roleResult, nil
 }
 
 func listRoles(cmd *cobra.Command, _ []string) {
@@ -79,14 +88,21 @@ func listRoles(cmd *cobra.Command, _ []string) {
 	}
 	defer client.Close()
 
-	roles, err := getRoles(cmd, true, client)
+	roles, roleGroups, err := getRoles(cmd, true, client)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
+	verbose := viper.Get(verboseOpt).(bool)
+
 	for _, r := range roles {
-		fmt.Println(r)
+		if !verbose {
+			fmt.Println(r)
+			continue
+		}
+		groups := strings.Join(roleGroups[r], ",")
+		fmt.Printf("%s: (%s)\n", r, groups)
 	}
 }
 
