@@ -30,8 +30,7 @@ var groupAddCmd = &cobra.Command{
 A role should be either specified with -role flag or be the first argument
 followed by list of groups.
 
-If -role flag is specified, arguments are group names to add.
-	.`,
+If -role flag is specified, arguments are group names to add.`,
 	RunE: addGroupToRole,
 }
 

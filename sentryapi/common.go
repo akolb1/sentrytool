@@ -60,6 +60,10 @@ type SentryClientAPI interface {
 	//   role - role name
 	//   groups - list of group names to add
 	AddGroupsToRole(role string, groups []string) error
+	// RemoveGroupsFromRole removes specified groups from a role
+	//   role - role name
+	//   groups - list of group names to remove
+	RemoveGroupsFromRole(role string, groups []string) error
 }
 
 // GetClient returns a Sentry client implementation

@@ -38,7 +38,8 @@ If optional '-m regexp' flag is specified, only list roles matching regexp.`,
 func getRoles(cmd *cobra.Command,
 	useMatcher bool,
 	client sentryapi.SentryClientAPI) ([]string, error) {
-	roles, err := client.ListRoleByGroup("")
+	group, _ := cmd.Flags().GetString(groupOpt)
+	roles, err := client.ListRoleByGroup(group)
 	if err != nil {
 		return nil, err
 	}
@@ -91,5 +92,6 @@ func listRoles(cmd *cobra.Command, _ []string) {
 
 func init() {
 	roleListCmd.Flags().StringP(matchOpt, "m", "", "regexp matching role")
+	roleListCmd.Flags().StringP(groupOpt, "g", "", "group for a role")
 	roleCmd.AddCommand(roleListCmd)
 }

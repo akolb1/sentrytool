@@ -29,6 +29,7 @@ const (
 	portOpt           = "port"
 	userOpt           = "username"
 	matchOpt          = "match"
+	groupOpt          = "group"
 	forceOpt          = "force"
 	componentOpt      = "component"
 	verboseOpt        = "verbose"

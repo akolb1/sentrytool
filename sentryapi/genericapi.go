@@ -141,3 +141,25 @@ func (c *genericSentryClient) AddGroupsToRole(role string, groups []string) erro
 
 	return nil
 }
+
+func (c *genericSentryClient) RemoveGroupsFromRole(role string, groups []string) error {
+	arg := sentry_generic_policy_service.NewTAlterSentryRoleDeleteGroupsRequest()
+	arg.RequestorUserName = c.userName
+	arg.RoleName = role
+	arg.Component = c.component
+
+	groupsMap := make(map[string]bool)
+	for _, group := range groups {
+		groupsMap[group] = true
+	}
+	arg.Groups = groupsMap
+	result, err := c.client.AlterSentryRoleDeleteGroups(arg)
+	if err != nil {
+		return fmt.Errorf("failed to remove groups: %s", err)
+	}
+	if result.GetStatus().Value != 0 {
+		return fmt.Errorf("%s", result.GetStatus().Message)
+	}
+
+	return nil
+}
