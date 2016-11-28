@@ -15,6 +15,7 @@ sentrytool role list
 ### Options
 
 ```
+  -g, --group string   group for a role
   -m, --match string   regexp matching role
 ```
 
