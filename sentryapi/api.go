@@ -42,8 +42,15 @@ func (pt ProtocolType) String() string {
 	return "unknownProtocol"
 }
 
+// Role is a representation of Sentry role. Each role has a name and a
+// list of groups associated with the role.
+type Role struct {
+	Name string
+	Groups []string
+}
+
 // SentryClientAPI is a generic Apache Sentry client interface.
-type SentryClientAPI interface {
+type ClientAPI interface {
 	// Close closes the client connection
 	Close()
 	// CreateRole creates a role with given name
@@ -55,7 +62,7 @@ type SentryClientAPI interface {
 	// ListRoleByGroup returns list of role names for a given group or all
 	// roles if group is nil
 	//   group - group name
-	ListRoleByGroup(group string) ([]string, error)
+	ListRoleByGroup(group string) ([]string, []*Role, error)
 	// AddGroupsToRole adds specified groups to a role
 	//   role - role name
 	//   groups - list of group names to add
@@ -73,7 +80,7 @@ type SentryClientAPI interface {
 //   component - Sentry component for generic protocol
 //   user - Sentry authorization user
 func GetClient(protocol ProtocolType, host string, port int,
-	component string, user string) (SentryClientAPI, error) {
+	component string, user string) (ClientAPI, error) {
 	switch protocol {
 	case PolicyProtocol:
 		return getHiveClient(host, port, user)

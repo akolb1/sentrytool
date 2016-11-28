@@ -54,7 +54,7 @@ func addGroupToRole(cmd *cobra.Command, args []string) error {
 	defer client.Close()
 
 	// Get existing roles
-	roles, err := client.ListRoleByGroup("")
+	roles, _, err := client.ListRoleByGroup("")
 	if err != nil {
 		fmt.Println(err)
 		return nil

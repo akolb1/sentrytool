@@ -38,7 +38,7 @@ func roleCreate(cmd *cobra.Command, args []string) {
 	defer client.Close()
 
 	// Get existing roles
-	roles, err := client.ListRoleByGroup("")
+	roles, _, err := client.ListRoleByGroup("")
 	if err != nil {
 		fmt.Println(err)
 		return

@@ -10,7 +10,7 @@ import (
 //
 // If component is specified, it uses Generic sentry protocol, otherwise it uses legacy
 // protocol
-func getClient() (sentryapi.SentryClientAPI, error) {
+func getClient() (sentryapi.ClientAPI, error) {
 	host := viper.Get(hostOpt).(string)
 	port := viper.Get(portOpt).(int)
 	user := viper.Get(userOpt).(string)

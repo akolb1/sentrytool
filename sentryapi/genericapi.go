@@ -94,7 +94,8 @@ func (c *genericSentryClient) RemoveRole(name string) error {
 	return nil
 }
 
-func (c *genericSentryClient) ListRoleByGroup(group string) ([]string, error) {
+func (c *genericSentryClient) ListRoleByGroup(group string) ([]string,
+	[]*Role, error) {
 	arg := sentry_generic_policy_service.NewTListSentryRolesRequest()
 	if group == "" {
 		arg.GroupName = nil
@@ -106,18 +107,30 @@ func (c *genericSentryClient) ListRoleByGroup(group string) ([]string, error) {
 	arg.Component = c.component
 	result, err := c.client.ListSentryRolesByGroup(arg)
 	if err != nil {
-		return nil, fmt.Errorf("failed to list Sentry roles: %s", err)
+		return nil, nil, fmt.Errorf("failed to list Sentry roles: %s", err)
 	}
 
 	if result.GetStatus().Value != 0 {
-		return nil, fmt.Errorf("%s\n%s", result.GetStatus().Message,
+		return nil, nil, fmt.Errorf("%s\n%s", result.GetStatus().Message,
 			*result.GetStatus().Stack)
 	}
-	roles := make([]string, 0, 8)
+	roleNames := make([]string, 0, 8)
+	roles := make([]*Role, 0, 8)
+
+	// Collect results
 	for role := range result.Roles {
-		roles = append(roles, role.RoleName)
+		roleNames = append(roleNames, role.RoleName)
+		groupMap := role.Groups
+		groups := []string{}
+		// Get list of groups
+		for group := range groupMap {
+			groups = append(groups, group)
+		}
+		roles = append(roles,
+			&Role{Name: role.RoleName, Groups: groups})
+
 	}
-	return roles, nil
+	return roleNames, roles, nil
 }
 
 func (c *genericSentryClient) AddGroupsToRole(role string, groups []string) error {
