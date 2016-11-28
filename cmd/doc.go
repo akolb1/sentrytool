@@ -30,12 +30,12 @@ var docCmd = &cobra.Command{
 		isMan, _ := cmd.Flags().GetBool("man")
 		if isMan {
 			header := &doc.GenManHeader{
-				Title: "Sentry",
+				Title:   "Sentry",
 				Section: "3",
 			}
 			doc.GenManTree(RootCmd, header, docdir)
 		} else {
-			doc.GenMarkdownTree(RootCmd, docdir + "/")
+			doc.GenMarkdownTree(RootCmd, docdir+"/")
 		}
 	},
 }

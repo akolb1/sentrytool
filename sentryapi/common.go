@@ -47,12 +47,19 @@ type SentryClientAPI interface {
 	// Close closes the client connection
 	Close()
 	// CreateRole creates a role with given name
+	//   name - role name
 	CreateRole(name string) error
 	// RemoveRole removes role with given name
+	//   name - role name
 	RemoveRole(name string) error
 	// ListRoleByGroup returns list of role names for a given group or all
 	// roles if group is nil
+	//   group - group name
 	ListRoleByGroup(group string) ([]string, error)
+	// AddGroupsToRole adds specified groups to a role
+	//   role - role name
+	//   groups - list of group names to add
+	AddGroupsToRole(role string, groups []string) error
 }
 
 // GetClient returns a Sentry client implementation

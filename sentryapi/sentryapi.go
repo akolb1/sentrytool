@@ -106,3 +106,25 @@ func (c *sentryClient) ListRoleByGroup(group string) ([]string, error) {
 	}
 	return roles, nil
 }
+
+func (c *sentryClient) AddGroupsToRole(role string, groups []string) error {
+	arg := sentry_policy_service.NewTAlterSentryRoleAddGroupsRequest()
+	arg.RequestorUserName = c.userName
+	arg.RoleName = role
+	groupsMap := make(map[*sentry_policy_service.TSentryGroup]bool)
+	for _, group := range groups {
+		tGroup := sentry_policy_service.TSentryGroup{GroupName: group}
+		groupsMap[&tGroup] = true
+	}
+	arg.Groups = groupsMap
+	result, err := c.client.AlterSentryRoleAddGroups(arg)
+	// fmt.Println(result)
+	if err != nil {
+		return fmt.Errorf("failed to add groups: %s", err)
+	}
+	if result.GetStatus().GetValue() != 0 {
+		return fmt.Errorf("%s", result.GetStatus().Message)
+	}
+
+	return nil
+}
