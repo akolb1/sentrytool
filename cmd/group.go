@@ -19,7 +19,7 @@ import "github.com/spf13/cobra"
 // roleCmd represents the role command
 var groupCmd = &cobra.Command{
 	Use:   "group",
-	Short: "add or remove group",
+	Short: "list, add or remove group",
 }
 
 func init() {
