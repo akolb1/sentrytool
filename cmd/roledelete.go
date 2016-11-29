@@ -41,32 +41,9 @@ func roleDelete(cmd *cobra.Command, args []string) {
 
 	verbose := viper.Get(verboseOpt).(bool)
 
-	var existingRoles map[string]bool
-	roles := args
-	if len(roles) == 0 {
-		r, _, err := getRoles(cmd, true, client)
-		if err != nil {
-			log.Fatal(err)
-		}
-		roles = r
-	} else {
-		existing, _, err := getRoles(cmd, false, client)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		existingRoles = make(map[string]bool)
-		for _, role := range existing {
-			existingRoles[role] = true
-		}
-	}
+	roles, _, err := getRoles(cmd, args, true, client)
 
 	for _, roleName := range roles {
-		if existingRoles != nil && !existingRoles[roleName] {
-			fmt.Println("role", roleName, "does not exist, skipping")
-			continue
-		}
-
 		force, _ := cmd.Flags().GetBool(forceOpt)
 		if !force && !askYN(fmt.Sprintf("delete '%s'? ", roleName)) {
 			continue
@@ -75,9 +52,6 @@ func roleDelete(cmd *cobra.Command, args []string) {
 		if err != nil {
 			fmt.Println(err)
 			continue
-		}
-		if existingRoles != nil {
-			existingRoles[roleName] = false
 		}
 		if verbose {
 			fmt.Println("removed role ", roleName)

@@ -34,7 +34,7 @@ func init() {
 	privCmd.PersistentFlags().StringP("service", "", "", "service name")
 	privCmd.PersistentFlags().StringP("role", "r", "", "role name")
 
-	privCmd.PersistentFlags().BoolP("grantoption", "g", false, "grantOption")
+	privCmd.PersistentFlags().BoolP("grantoption", "", false, "grantOption")
 
 	RootCmd.AddCommand(privCmd)
 }

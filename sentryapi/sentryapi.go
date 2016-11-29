@@ -86,13 +86,13 @@ func (c *sentryClient) RemoveRole(name string) error {
 func (c *sentryClient) ListRoleByGroup(group string) ([]string,
 	[]*Role, error) {
 	arg := sentry_policy_service.NewTListSentryRolesRequest()
+	arg.RequestorUserName = c.userName
 	if group == "" {
 		arg.GroupName = nil
 	} else {
 		arg.GroupName = &group
 	}
 
-	arg.RequestorUserName = c.userName
 	result, err := c.client.ListSentryRolesByGroup(arg)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to list Sentry roles: %s", err)
@@ -221,4 +221,32 @@ func (c *sentryClient) RevokePrivilege(role string, priv *Privilege) error {
 	}
 
 	return nil
+}
+
+func (c *sentryClient) ListPrivilegesByRole(roleName string) ([]*Privilege, error) {
+	arg := sentry_policy_service.NewTListSentryPrivilegesRequest()
+	arg.RequestorUserName = c.userName
+	arg.RoleName = roleName
+
+	result, err := c.client.ListSentryPrivilegesByRole(arg)
+	if err != nil {
+		return nil, fmt.Errorf("failed to list privileges: %s", err)
+	}
+
+	privList := make([]*Privilege, 0, len(result.Privileges))
+	for tPriv, _ := range result.Privileges {
+		priv := &Privilege{
+			Server: tPriv.ServerName,
+			Database: tPriv.DbName,
+			Table: tPriv.TableName,
+			Column: tPriv.ColumnName,
+			URI: tPriv.URI,
+			Action: tPriv.Action,
+		}
+		priv.GrantOption = tPriv.GrantOption ==
+			sentry_policy_service.TSentryGrantOption_TRUE
+		privList =  append(privList, priv)
+	}
+
+	return privList, nil
 }

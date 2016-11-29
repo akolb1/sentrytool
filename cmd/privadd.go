@@ -24,7 +24,7 @@ import (
 
 var privAddCmd = &cobra.Command{
 	Use:     "grant",
-	Aliases: []string{"add"},
+	Aliases: []string{"add", "create"},
 	Short:   "grant privilege",
 	RunE:    addPrivilege,
 }

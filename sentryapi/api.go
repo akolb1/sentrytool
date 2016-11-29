@@ -44,6 +44,9 @@ func (pt ProtocolType) String() string {
 
 // Role is a representation of Sentry role. Each role has a name and a
 // list of groups associated with the role.
+// Attributes:
+//   Name - Role name
+//   Groups - list of groups for the role
 type Role struct {
 	Name   string
 	Groups []string
@@ -88,7 +91,9 @@ type ClientAPI interface {
 	// GrantPrivilege grants privilege to the role
 	GrantPrivilege(role string, priv *Privilege) error
 	// RevokePrivilege revokes privilege from the role
-	RevokePrivilege(role string, priv *Privilege) error
+	RevokePrivilege(roleName string, priv *Privilege) error
+	// ListPrivilegesByRole returns a list of privileges for the role
+	ListPrivilegesByRole(roleName string) ([]*Privilege, error)
 }
 
 // GetClient returns a Sentry client implementation

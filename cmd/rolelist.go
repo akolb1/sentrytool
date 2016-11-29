@@ -34,7 +34,17 @@ var roleListCmd = &cobra.Command{
 	Long: `list all roles.
 If optional '-m regexp' flag is specified, only list roles matching regexp.
 If '-g group' flag is specifiedm only list roles for the speecified group.
-In verbose mode prints groups for each role.`,
+In verbose mode prints groups for each role.
+
+If roles are provided in arguments, list those roles, otherwise list all matching roles.
+
+Example:
+
+  sentrytool role list -v
+  sentrytool role list -v role1 role2
+  sentrytool role list -g group1
+
+`,
 	Run: listRoles,
 }
 
@@ -42,7 +52,9 @@ type roleGroupMap map[string][]string
 
 // getRoles returns a list of Sentry roles from the server
 // if useMatcher is true, filters result according to '-m' flag
+// If any roles are specified in args, use them
 func getRoles(cmd *cobra.Command,
+	args []string,
 	useMatcher bool,
 	client sentryapi.ClientAPI) ([]string, roleGroupMap, error) {
 	group, _ := cmd.Flags().GetString(groupOpt)
@@ -77,10 +89,26 @@ func getRoles(cmd *cobra.Command,
 		result = append(result, role.Name)
 		roleResult[role.Name] = role.Groups
 	}
-	return result, roleResult, nil
+
+	// If there are any roles on the command line, remove any roles that are
+	// not mentioned there
+	if len(args) == 0 {
+		return result, roleResult, nil
+	}
+
+	result = make([]string, 0, len(args))
+	roleMap := make(roleGroupMap)
+
+	for _, name := range args {
+		if r, ok := roleResult[name]; ok {
+			result = append(result, name)
+			roleMap[name] = r
+		}
+	}
+	return result, roleMap, nil
 }
 
-func listRoles(cmd *cobra.Command, _ []string) {
+func listRoles(cmd *cobra.Command, args []string) {
 	client, err := getClient()
 	if err != nil {
 		fmt.Println(err)
@@ -88,7 +116,7 @@ func listRoles(cmd *cobra.Command, _ []string) {
 	}
 	defer client.Close()
 
-	roles, roleGroups, err := getRoles(cmd, true, client)
+	roles, roleGroups, err := getRoles(cmd, args, true, client)
 	if err != nil {
 		fmt.Println(err)
 		return

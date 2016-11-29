@@ -19,7 +19,7 @@ sentrytool privilege grant
   -C, --component string   sentry client component
       --config string      config file (default is $HOME/.sentrytool.yaml)
   -d, --database string    database ame
-  -g, --grantoption        grantOption
+      --grantoption        grantOption
   -H, --host string        hostname for Sentry server (default "localhost")
   -P, --port int           port for Sentry server (default 8038)
   -r, --role string        role name
