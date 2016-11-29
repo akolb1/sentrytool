@@ -19,19 +19,21 @@ import (
 )
 
 var privCmd = &cobra.Command{
-	Use: "privilege",
+	Use:   "privilege",
 	Short: "privilege operations",
 }
 
 func init() {
 	privCmd.PersistentFlags().StringP("action", "a", "", "action")
-	privCmd.PersistentFlags().StringP("server", "s", "", "serverName")
-	privCmd.PersistentFlags().StringP("database", "d", "", "databaseName")
-	privCmd.PersistentFlags().StringP("table", "t", "", "tableName")
-	privCmd.PersistentFlags().StringP("column", "c", "", "columnName")
+	privCmd.PersistentFlags().StringP("server", "s", "", "server name")
+	privCmd.PersistentFlags().StringP("database", "d", "", "database ame")
+	privCmd.PersistentFlags().StringP("table", "t", "", "table name")
+	privCmd.PersistentFlags().StringP("column", "c", "", "column name")
 	privCmd.PersistentFlags().StringP("uri", "u", "", "URI")
 	privCmd.PersistentFlags().StringP("scope", "", "", "Scope")
-	privCmd.PersistentFlags().StringP("role", "r", "", "roleName")
+	privCmd.PersistentFlags().StringP("service", "", "", "service name")
+	privCmd.PersistentFlags().StringP("role", "r", "", "role name")
+
 	privCmd.PersistentFlags().BoolP("grantoption", "g", false, "grantOption")
 
 	RootCmd.AddCommand(privCmd)

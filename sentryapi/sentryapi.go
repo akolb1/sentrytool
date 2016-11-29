@@ -175,7 +175,6 @@ func (c *sentryClient) GrantPrivilege(role string, priv *Privilege) error {
 	tPrivilege.DbName = priv.Database
 	tPrivilege.TableName = priv.Table
 	tPrivilege.URI = priv.URI
-	tPrivilege.Action = priv.Action
 
 	if priv.GrantOption {
 		tPrivilege.GrantOption = sentry_policy_service.TSentryGrantOption_TRUE
@@ -185,7 +184,7 @@ func (c *sentryClient) GrantPrivilege(role string, priv *Privilege) error {
 	result, err := c.client.AlterSentryRoleGrantPrivilege(arg)
 
 	if err != nil {
-		return fmt.Errorf("failed to gran privilege: %s", err)
+		return fmt.Errorf("failed to grant privilege: %s", err)
 	}
 	if result.GetStatus().GetValue() != 0 {
 		return fmt.Errorf("%s", result.GetStatus().Message)
@@ -206,7 +205,6 @@ func (c *sentryClient) RevokePrivilege(role string, priv *Privilege) error {
 	tPrivilege.DbName = priv.Database
 	tPrivilege.TableName = priv.Table
 	tPrivilege.URI = priv.URI
-	tPrivilege.Action = priv.Action
 
 	if priv.GrantOption {
 		tPrivilege.GrantOption = sentry_policy_service.TSentryGrantOption_TRUE

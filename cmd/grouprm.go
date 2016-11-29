@@ -24,9 +24,9 @@ import (
 
 // roleCmd represents the role command
 var groupRemoveCmd = &cobra.Command{
-	Use:   "remove",
+	Use:     "remove",
 	Aliases: []string{"revoke", "delete"},
-	Short: "Remove group from a role",
+	Short:   "Remove group from a role",
 	Long: `Remove group from a role.
 A role should be either specified with -role flag or be the first argument
 followed by list of groups.
@@ -54,20 +54,11 @@ func removeGroupFromRole(cmd *cobra.Command, args []string) error {
 	}
 	defer client.Close()
 
-	// Get existing roles
-	roles, _, err := client.ListRoleByGroup("")
+	// Verify that roleName is valid
+	isValid, err := isValidRole(client, roleName)
 	if err != nil {
 		fmt.Println(err)
 		return nil
-	}
-
-	// Verify that roleName is valid
-	isValid := false
-	for _, role := range roles {
-		if role == roleName {
-			isValid = true
-			break
-		}
 	}
 	if !isValid {
 		return fmt.Errorf("role %s doesn't exist", roleName)

@@ -18,8 +18,8 @@ import "github.com/spf13/cobra"
 
 // roleCmd represents the role command
 var roleCmd = &cobra.Command{
-	Use:     "role",
-	Short:   "Sentry roles manipulation",
+	Use:   "role",
+	Short: "Sentry roles manipulation",
 	Long: `Create, list or delete roles.
 Multiple roles can be created or removed with a single command.`,
 	Run: listRoles,

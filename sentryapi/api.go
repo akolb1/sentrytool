@@ -49,7 +49,8 @@ type Role struct {
 	Groups []string
 }
 
-// Privilege is the Sentry privilege representation
+// Privilege is the Sentry privilege representation. It comboines
+// Generic model and legacy Hive model
 type Privilege struct {
 	Scope       string
 	Server      string
@@ -58,7 +59,8 @@ type Privilege struct {
 	Column      string
 	URI         string
 	Action      string
-	GrantOption bool // true/false/nil means unset
+	Service     string
+	GrantOption bool
 }
 
 // SentryClientAPI is a generic Apache Sentry client interface.

@@ -19,7 +19,6 @@ import (
 
 	"git.apache.org/thrift.git/lib/go/thrift"
 	"github.com/akolb1/sentrytool/sentryapi/thrift/sentry_generic_policy_service"
-	"errors"
 )
 
 // TMPGenericProtocolFactory is a multiplexing protocol factory
@@ -179,9 +178,57 @@ func (c *genericSentryClient) RemoveGroupsFromRole(role string, groups []string)
 }
 
 func (c *genericSentryClient) GrantPrivilege(role string, priv *Privilege) error {
-	return errors.New("GrantPrivilege() for generic client is not supported")
+	arg := sentry_generic_policy_service.NewTAlterSentryRoleGrantPrivilegeRequest()
+	arg.RequestorUserName = c.userName
+	arg.RoleName = role
+	arg.Component = c.component
+
+	tPrivilege := sentry_generic_policy_service.NewTSentryPrivilege()
+	tPrivilege.Action = priv.Action
+	tPrivilege.Component = c.component
+	tPrivilege.ServiceName = priv.Service
+
+	if priv.GrantOption {
+		tPrivilege.GrantOption = sentry_generic_policy_service.TSentryGrantOption_TRUE
+	}
+
+	arg.Privilege = tPrivilege
+	result, err := c.client.AlterSentryRoleGrantPrivilege(arg)
+
+	if err != nil {
+		return fmt.Errorf("failed to grant privilege: %s", err)
+	}
+	if result.GetStatus().Value != 0 {
+		return fmt.Errorf("%s", result.GetStatus().Message)
+	}
+
+	return nil
 }
 
 func (c *genericSentryClient) RevokePrivilege(role string, priv *Privilege) error {
-	return errors.New("RevokePrivilege() for generic client is not supported")
+	arg := sentry_generic_policy_service.NewTAlterSentryRoleRevokePrivilegeRequest()
+	arg.RequestorUserName = c.userName
+	arg.RoleName = role
+	arg.Component = c.component
+
+	tPrivilege := sentry_generic_policy_service.NewTSentryPrivilege()
+	tPrivilege.Action = priv.Action
+	tPrivilege.Component = c.component
+	tPrivilege.ServiceName = priv.Service
+
+	if priv.GrantOption {
+		tPrivilege.GrantOption = sentry_generic_policy_service.TSentryGrantOption_TRUE
+	}
+
+	arg.Privilege = tPrivilege
+	result, err := c.client.AlterSentryRoleRevokePrivilege(arg)
+
+	if err != nil {
+		return fmt.Errorf("failed to revoke privilege: %s", err)
+	}
+	if result.GetStatus().Value != 0 {
+		return fmt.Errorf("%s", result.GetStatus().Message)
+	}
+
+	return nil
 }

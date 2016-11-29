@@ -15,17 +15,18 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
 	"errors"
-	"github.com/akolb1/sentrytool/sentryapi"
 	"fmt"
+
+	"github.com/akolb1/sentrytool/sentryapi"
+	"github.com/spf13/cobra"
 )
 
 var privRevokeCmd = &cobra.Command{
-	Use: "revoke",
+	Use:     "revoke",
 	Aliases: []string{"remove", "delete"},
-	Short: "revoke privilege",
-	RunE: revokePrivilege,
+	Short:   "revoke privilege",
+	RunE:    revokePrivilege,
 }
 
 func revokePrivilege(cmd *cobra.Command, args []string) error {
@@ -46,16 +47,18 @@ func revokePrivilege(cmd *cobra.Command, args []string) error {
 	uri, _ := cmd.Flags().GetString("uri")
 	scope, _ := cmd.Flags().GetString("scope")
 	grant, _ := cmd.Flags().GetBool("grantoption")
+	service, _ := cmd.Flags().GetString("service")
 
 	priv := &sentryapi.Privilege{
-		Action: action,
-		Server: server,
-		Database: database,
-		Table: table,
-		Column: column,
-		URI: uri,
-		Scope: scope,
+		Action:      action,
+		Server:      server,
+		Database:    database,
+		Table:       table,
+		Column:      column,
+		URI:         uri,
+		Scope:       scope,
 		GrantOption: grant,
+		Service:     service,
 	}
 
 	client, err := getClient()
@@ -73,7 +76,6 @@ func revokePrivilege(cmd *cobra.Command, args []string) error {
 
 	return nil
 }
-
 
 func init() {
 	privCmd.AddCommand(privRevokeCmd)

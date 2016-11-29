@@ -18,10 +18,10 @@ import "github.com/spf13/cobra"
 
 // roleCmd represents the role command
 var roleRemoveCmd = &cobra.Command{
-	Use:   "remove",
+	Use:     "remove",
 	Aliases: []string{"revoke"},
-	Short: "remove group or permission from a role",
-	Long:  "remove group or permission from a role",
+	Short:   "remove group or permission from a role",
+	Long:    "remove group or permission from a role",
 }
 
 func init() {

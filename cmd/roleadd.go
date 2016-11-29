@@ -18,9 +18,9 @@ import "github.com/spf13/cobra"
 
 // roleCmd represents the role command
 var roleAddCmd = &cobra.Command{
-	Use:   "add",
+	Use:     "add",
 	Aliases: []string{"grant"},
-	Short: "add group or permission to a role",
+	Short:   "add group or permission to a role",
 }
 
 func init() {

@@ -23,3 +23,18 @@ func getClient() (sentryapi.ClientAPI, error) {
 	return sentryapi.GetClient(sentryapi.GenericPolicyProtocol,
 		host, port, component, user)
 }
+
+// isValidRole returns true if role is valid
+func isValidRole(client sentryapi.ClientAPI, roleName string) (bool, error) {
+	// Get existing roles
+	roles, _, err := client.ListRoleByGroup("")
+	if err != nil {
+		return false, err
+	}
+	for _, role := range roles {
+		if role == roleName {
+			return true, nil
+		}
+	}
+	return false, nil
+}
