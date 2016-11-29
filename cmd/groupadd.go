@@ -24,7 +24,8 @@ import (
 
 // roleCmd represents the role command
 var groupAddCmd = &cobra.Command{
-	Use:   "group",
+	Use:   "add",
+	Aliases: []string{"grant"},
 	Short: "add group to a role",
 	Long: `Add group to a role.
 A role should be either specified with -role flag or be the first argument
@@ -87,5 +88,5 @@ func addGroupToRole(cmd *cobra.Command, args []string) error {
 }
 
 func init() {
-	roleAddCmd.AddCommand(groupAddCmd)
+	groupCmd.AddCommand(groupAddCmd)
 }

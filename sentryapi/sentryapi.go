@@ -162,3 +162,65 @@ func (c *sentryClient) RemoveGroupsFromRole(role string, groups []string) error 
 
 	return nil
 }
+
+func (c *sentryClient) GrantPrivilege(role string, priv *Privilege) error {
+	arg := sentry_policy_service.NewTAlterSentryRoleGrantPrivilegeRequest()
+	arg.RequestorUserName = c.userName
+	arg.RoleName = role
+
+	tPrivilege := sentry_policy_service.NewTSentryPrivilege()
+	tPrivilege.Action = priv.Action
+	tPrivilege.ColumnName = priv.Column
+	tPrivilege.ServerName = priv.Server
+	tPrivilege.DbName = priv.Database
+	tPrivilege.TableName = priv.Table
+	tPrivilege.URI = priv.URI
+	tPrivilege.Action = priv.Action
+
+	if priv.GrantOption {
+		tPrivilege.GrantOption = sentry_policy_service.TSentryGrantOption_TRUE
+	}
+
+	arg.Privilege = tPrivilege
+	result, err := c.client.AlterSentryRoleGrantPrivilege(arg)
+
+	if err != nil {
+		return fmt.Errorf("failed to gran privilege: %s", err)
+	}
+	if result.GetStatus().GetValue() != 0 {
+		return fmt.Errorf("%s", result.GetStatus().Message)
+	}
+
+	return nil
+}
+
+func (c *sentryClient) RevokePrivilege(role string, priv *Privilege) error {
+	arg := sentry_policy_service.NewTAlterSentryRoleRevokePrivilegeRequest()
+	arg.RequestorUserName = c.userName
+	arg.RoleName = role
+
+	tPrivilege := sentry_policy_service.NewTSentryPrivilege()
+	tPrivilege.Action = priv.Action
+	tPrivilege.ColumnName = priv.Column
+	tPrivilege.ServerName = priv.Server
+	tPrivilege.DbName = priv.Database
+	tPrivilege.TableName = priv.Table
+	tPrivilege.URI = priv.URI
+	tPrivilege.Action = priv.Action
+
+	if priv.GrantOption {
+		tPrivilege.GrantOption = sentry_policy_service.TSentryGrantOption_TRUE
+	}
+
+	arg.Privilege = tPrivilege
+	result, err := c.client.AlterSentryRoleRevokePrivilege(arg)
+
+	if err != nil {
+		return fmt.Errorf("failed to revoke privilege: %s", err)
+	}
+	if result.GetStatus().GetValue() != 0 {
+		return fmt.Errorf("%s", result.GetStatus().Message)
+	}
+
+	return nil
+}

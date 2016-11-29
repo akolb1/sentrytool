@@ -19,6 +19,7 @@ import (
 
 	"git.apache.org/thrift.git/lib/go/thrift"
 	"github.com/akolb1/sentrytool/sentryapi/thrift/sentry_generic_policy_service"
+	"errors"
 )
 
 // TMPGenericProtocolFactory is a multiplexing protocol factory
@@ -175,4 +176,12 @@ func (c *genericSentryClient) RemoveGroupsFromRole(role string, groups []string)
 	}
 
 	return nil
+}
+
+func (c *genericSentryClient) GrantPrivilege(role string, priv *Privilege) error {
+	return errors.New("GrantPrivilege() for generic client is not supported")
+}
+
+func (c *genericSentryClient) RevokePrivilege(role string, priv *Privilege) error {
+	return errors.New("RevokePrivilege() for generic client is not supported")
 }

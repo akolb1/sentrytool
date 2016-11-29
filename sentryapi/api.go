@@ -45,8 +45,20 @@ func (pt ProtocolType) String() string {
 // Role is a representation of Sentry role. Each role has a name and a
 // list of groups associated with the role.
 type Role struct {
-	Name string
+	Name   string
 	Groups []string
+}
+
+// Privilege is the Sentry privilege representation
+type Privilege struct {
+	Scope       string
+	Server      string
+	Database    string
+	Table       string
+	Column      string
+	URI         string
+	Action      string
+	GrantOption bool // true/false/nil means unset
 }
 
 // SentryClientAPI is a generic Apache Sentry client interface.
@@ -63,14 +75,18 @@ type ClientAPI interface {
 	// roles if group is nil
 	//   group - group name
 	ListRoleByGroup(group string) ([]string, []*Role, error)
-	// AddGroupsToRole adds specified groups to a role
+	// AddGroupsToRole adds specified groups to the role
 	//   role - role name
 	//   groups - list of group names to add
 	AddGroupsToRole(role string, groups []string) error
-	// RemoveGroupsFromRole removes specified groups from a role
+	// RemoveGroupsFromRole removes specified groups from the role
 	//   role - role name
 	//   groups - list of group names to remove
 	RemoveGroupsFromRole(role string, groups []string) error
+	// GrantPrivilege grants privilege to the role
+	GrantPrivilege(role string, priv *Privilege) error
+	// RevokePrivilege revokes privilege from the role
+	RevokePrivilege(role string, priv *Privilege) error
 }
 
 // GetClient returns a Sentry client implementation

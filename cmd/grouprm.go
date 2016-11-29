@@ -24,7 +24,8 @@ import (
 
 // roleCmd represents the role command
 var groupRemoveCmd = &cobra.Command{
-	Use:   "group",
+	Use:   "remove",
+	Aliases: []string{"revoke", "delete"},
 	Short: "Remove group from a role",
 	Long: `Remove group from a role.
 A role should be either specified with -role flag or be the first argument
@@ -87,5 +88,5 @@ func removeGroupFromRole(cmd *cobra.Command, args []string) error {
 }
 
 func init() {
-	roleRemoveCmd.AddCommand(groupRemoveCmd)
+	groupCmd.AddCommand(groupRemoveCmd)
 }
