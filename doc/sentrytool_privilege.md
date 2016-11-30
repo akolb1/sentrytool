@@ -45,7 +45,7 @@ r1 = db=db1->action=all, \
 
 ### SEE ALSO
 * [sentrytool](sentrytool.md)	 - Command-line interface to Apache Sentry
-* [sentrytool privilege grant](sentrytool_privilege_grant.md)	 - grant privilege
+* [sentrytool privilege grant](sentrytool_privilege_grant.md)	 - grant privileges to a role
 * [sentrytool privilege list](sentrytool_privilege_list.md)	 - list matching privileges
 * [sentrytool privilege revoke](sentrytool_privilege_revoke.md)	 - revoke privilege
 

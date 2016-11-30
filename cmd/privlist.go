@@ -24,7 +24,7 @@ import (
 
 var privListCmd = &cobra.Command{
 	Use:     "list",
-	Aliases: []string{"show"},
+	Aliases: []string{"show", "ls"},
 	Short:   "list matching privileges",
 	RunE:    listPriv,
 	Long: `list all matching privileges for given roles.
@@ -48,6 +48,7 @@ func listPriv(cmd *cobra.Command, args []string) error {
 		return nil
 	}
 
+	// For list command these flags mean filtering options
 	action, _ := cmd.Flags().GetString("action")
 	server, _ := cmd.Flags().GetString("server")
 	database, _ := cmd.Flags().GetString("database")
@@ -116,25 +117,25 @@ func listPriv(cmd *cobra.Command, args []string) error {
 func displayPrivilege(role string, privilege *sentryapi.Privilege) string {
 	parts := []string{}
 	if privilege.Server != "" {
-		parts = append(parts, "server="+privilege.Server)
+		parts = append(parts, serverKey+valSeparator+privilege.Server)
 	}
 	if privilege.Database != "" {
-		parts = append(parts, "db="+privilege.Database)
+		parts = append(parts, dbKey+valSeparator+privilege.Database)
 	}
 	if privilege.Table != "" {
-		parts = append(parts, "table="+privilege.Table)
+		parts = append(parts, tableKey+valSeparator+privilege.Table)
 	}
 	if privilege.Column != "" {
-		parts = append(parts, "column="+privilege.Column)
+		parts = append(parts, columnKey+valSeparator+privilege.Column)
 	}
 	if privilege.URI != "" {
-		parts = append(parts, "uri="+privilege.URI)
+		parts = append(parts, uriKey+valSeparator+privilege.URI)
 	}
 	if privilege.Action != "" {
-		parts = append(parts, "action="+privilege.Action)
+		parts = append(parts, actionKey+valSeparator+privilege.Action)
 	}
 
-	return strings.Join(parts, "->")
+	return strings.Join(parts, sentrySeparator)
 }
 
 func init() {

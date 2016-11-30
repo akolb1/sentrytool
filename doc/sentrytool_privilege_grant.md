@@ -1,11 +1,26 @@
 ## sentrytool privilege grant
 
-grant privilege
+grant privileges to a role
 
 ### Synopsis
 
 
-grant privilege
+
+Grant one or several privileges to a role. Privileges can be specified either using options or using
+sentry-style privilege specification. Any specification in the command-line override options.
+
+Multiple privileges may be set at the same time.
+
+Examples:
+
+  $ sentrytool p add -s server2 -r admin \
+    'db=db4->table=mytable->action=insert' \
+    'db=db5->table=mytable->action=remove'
+
+  $ sentrytool privileges list
+  admin = server=server2->db=db4->table=mytable->action=insert,\
+          server=server2->db=db5->table=mytable->action=remove
+
 
 ```
 sentrytool privilege grant
