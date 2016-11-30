@@ -176,6 +176,9 @@ func (c *sentryClient) GrantPrivilege(role string, priv *Privilege) error {
 	tPrivilege.TableName = priv.Table
 	tPrivilege.URI = priv.URI
 
+	if priv.UnsetGrantOption {
+		tPrivilege.GrantOption = sentry_policy_service.TSentryGrantOption_UNSET
+	}
 	if priv.GrantOption {
 		tPrivilege.GrantOption = sentry_policy_service.TSentryGrantOption_TRUE
 	}

@@ -48,6 +48,7 @@ func addPrivilege(cmd *cobra.Command, args []string) error {
 	scope, _ := cmd.Flags().GetString("scope")
 	grant, _ := cmd.Flags().GetBool("grantoption")
 	service, _ := cmd.Flags().GetString("service")
+	unsetgrant, _ := cmd.Flags().GetBool("unsetgrant")
 
 	priv := &sentryapi.Privilege{
 		Action:      action,
@@ -59,6 +60,7 @@ func addPrivilege(cmd *cobra.Command, args []string) error {
 		Scope:       scope,
 		GrantOption: grant,
 		Service:     service,
+		UnsetGrantOption: unsetgrant,
 	}
 
 	client, err := getClient()
@@ -85,5 +87,6 @@ func addPrivilege(cmd *cobra.Command, args []string) error {
 }
 
 func init() {
+	privAddCmd.Flags().BoolP("unsetgrant", "", false, "set grant option to 'unset")
 	privCmd.AddCommand(privAddCmd)
 }
