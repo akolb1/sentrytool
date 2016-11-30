@@ -22,6 +22,7 @@ var privCmd = &cobra.Command{
 	Use:     "privilege",
 	Aliases: []string{"priv", "p"},
 	Short:   "privilege operations",
+	RunE:    listPriv,
 	Long: `privilege operations: list, grant or revoke privileges.
 Argument is a list of roles.
 

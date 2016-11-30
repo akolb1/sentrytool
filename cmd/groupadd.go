@@ -31,14 +31,20 @@ var groupAddCmd = &cobra.Command{
 A role should be either specified with -role flag or be the first argument
 followed by list of groups.
 
-If -role flag is specified, arguments are group names to add.`,
+If -role flag is specified, arguments are group names to add.
+
+Examples:
+
+    group grant -r admin_role admin_group finance_group
+    group grant admin_role finance_group
+`,
 	RunE: addGroupToRole,
 }
 
 func addGroupToRole(cmd *cobra.Command, args []string) error {
 	roleName, _ := cmd.Flags().GetString("role")
 	if len(args) == 0 || (roleName == "" && len(args) == 1) {
-		return errors.New("missing group name(s)")
+		return errors.New("missing group name")
 	}
 
 	groups := args

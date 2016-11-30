@@ -31,7 +31,12 @@ var groupRemoveCmd = &cobra.Command{
 A role should be either specified with -role flag or be the first argument
 followed by list of groups.
 
-If -role flag is specified, arguments are group names to remove.`,
+If role is specified with -role flag, arguments are group names to remove.
+Examples:
+
+    group remove -r admin_role admin_group
+    group grant admin_role finance_group
+`,
 	RunE: removeGroupFromRole,
 }
 

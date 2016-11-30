@@ -19,7 +19,18 @@ import "github.com/spf13/cobra"
 // roleCmd represents the role command
 var groupCmd = &cobra.Command{
 	Use:   "group",
-	Short: "list, add or remove group",
+	Short: "list, add or remove groups to the role",
+	Long: `List, add or remove groups to the role.
+The role is specified with either '-r' flag ro as the first parameter.
+The remaining parameters are group names.
+
+Examples:
+
+    group list
+    group grant -r admin_role admin_group finance_group
+    group grant admin_role finance_group
+`,
+	RunE:  listGroups,
 }
 
 func init() {
