@@ -1,11 +1,15 @@
 ## sentrytool privilege list
 
-
+list matching privileges
 
 ### Synopsis
 
 
+list all matching privileges for given roles.
+Roles are given as command-line arguments.
 
+If any of the filtering options (server, database, table, etc) are specified,
+  only show matching privileges.
 
 ```
 sentrytool privilege list

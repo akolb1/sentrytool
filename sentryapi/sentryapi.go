@@ -239,16 +239,16 @@ func (c *sentryClient) ListPrivilegesByRole(roleName string) ([]*Privilege, erro
 	privList := make([]*Privilege, 0, len(result.Privileges))
 	for tPriv, _ := range result.Privileges {
 		priv := &Privilege{
-			Server: tPriv.ServerName,
+			Server:   tPriv.ServerName,
 			Database: tPriv.DbName,
-			Table: tPriv.TableName,
-			Column: tPriv.ColumnName,
-			URI: tPriv.URI,
-			Action: tPriv.Action,
+			Table:    tPriv.TableName,
+			Column:   tPriv.ColumnName,
+			URI:      tPriv.URI,
+			Action:   tPriv.Action,
 		}
 		priv.GrantOption = tPriv.GrantOption ==
 			sentry_policy_service.TSentryGrantOption_TRUE
-		privList =  append(privList, priv)
+		privList = append(privList, priv)
 	}
 
 	return privList, nil

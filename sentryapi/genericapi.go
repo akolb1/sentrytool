@@ -17,9 +17,10 @@ package sentryapi
 import (
 	"fmt"
 
+	"errors"
+
 	"git.apache.org/thrift.git/lib/go/thrift"
 	"github.com/akolb1/sentrytool/sentryapi/thrift/sentry_generic_policy_service"
-	"errors"
 )
 
 // TMPGenericProtocolFactory is a multiplexing protocol factory

@@ -25,7 +25,13 @@ import (
 var privListCmd = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"show"},
+	Short:   "list matching privileges",
 	RunE:    listPriv,
+	Long: `list all matching privileges for given roles.
+Roles are given as command-line arguments.
+
+If any of the filtering options (server, database, table, etc) are specified,
+  only show matching privileges.`,
 }
 
 func listPriv(cmd *cobra.Command, args []string) error {
@@ -42,6 +48,16 @@ func listPriv(cmd *cobra.Command, args []string) error {
 		return nil
 	}
 
+	action, _ := cmd.Flags().GetString("action")
+	server, _ := cmd.Flags().GetString("server")
+	database, _ := cmd.Flags().GetString("database")
+	table, _ := cmd.Flags().GetString("table")
+	column, _ := cmd.Flags().GetString("column")
+	uri, _ := cmd.Flags().GetString("uri")
+	scope, _ := cmd.Flags().GetString("scope")
+	grant, _ := cmd.Flags().GetBool("grantoption")
+	service, _ := cmd.Flags().GetString("service")
+
 	for _, roleName := range roles {
 		isValid, err := isValidRole(client, roleName)
 		if err != nil {
@@ -56,14 +72,40 @@ func listPriv(cmd *cobra.Command, args []string) error {
 			continue
 		}
 
-		if len(privList) == 0 {
-			fmt.Println(roleName)
-			continue
-		}
-
 		privs := make([]string, 0, len(privList))
+		// Go through privileges and add matching ones
 		for _, priv := range privList {
+			if action != "" && priv.Action != action {
+				continue
+			}
+			if server != "" && priv.Server != server {
+				continue
+			}
+			if database != "" && priv.Database != database {
+				continue
+			}
+			if table != "" && priv.Table != table {
+				continue
+			}
+			if column != "" && priv.Column != column {
+				continue
+			}
+			if uri != "" && priv.URI != uri {
+				continue
+			}
+			if scope != "" && priv.Scope != scope {
+				continue
+			}
+			if service != "" && priv.Service != service {
+				continue
+			}
+			if grant && !priv.GrantOption {
+				continue
+			}
 			privs = append(privs, displayPrivilege(roleName, priv))
+		}
+		if len(privs) == 0 {
+			continue
 		}
 		fmt.Println(roleName, "=", strings.Join(privs, ", "))
 
@@ -83,7 +125,7 @@ func displayPrivilege(role string, privilege *sentryapi.Privilege) string {
 		parts = append(parts, "table="+privilege.Table)
 	}
 	if privilege.Column != "" {
-		parts = append(parts, "table="+privilege.Column)
+		parts = append(parts, "column="+privilege.Column)
 	}
 	if privilege.URI != "" {
 		parts = append(parts, "uri="+privilege.URI)

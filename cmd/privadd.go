@@ -51,15 +51,15 @@ func addPrivilege(cmd *cobra.Command, args []string) error {
 	unsetgrant, _ := cmd.Flags().GetBool("unsetgrant")
 
 	priv := &sentryapi.Privilege{
-		Action:      action,
-		Server:      server,
-		Database:    database,
-		Table:       table,
-		Column:      column,
-		URI:         uri,
-		Scope:       scope,
-		GrantOption: grant,
-		Service:     service,
+		Action:           action,
+		Server:           server,
+		Database:         database,
+		Table:            table,
+		Column:           column,
+		URI:              uri,
+		Scope:            scope,
+		GrantOption:      grant,
+		Service:          service,
 		UnsetGrantOption: unsetgrant,
 	}
 

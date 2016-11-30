@@ -11,6 +11,12 @@ grant privilege
 sentrytool privilege grant
 ```
 
+### Options
+
+```
+      --unsetgrant   set grant option to 'unset
+```
+
 ### Options inherited from parent commands
 
 ```

@@ -17,9 +17,10 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/spf13/cobra"
 	"sort"
 	"strings"
+
+	"github.com/spf13/cobra"
 )
 
 var groupListCmd = &cobra.Command{
