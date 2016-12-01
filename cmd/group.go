@@ -34,6 +34,6 @@ Examples:
 }
 
 func init() {
-	groupCmd.Flags().StringP("role", "r", "", "roleName")
+	groupCmd.PersistentFlags().StringP("role", "r", "", "roleName")
 	RootCmd.AddCommand(groupCmd)
 }

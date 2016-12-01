@@ -22,6 +22,16 @@ var roleCmd = &cobra.Command{
 	Short: "Sentry roles manipulation",
 	Long: `Create, list or delete roles.
 Multiple roles can be created or removed with a single command.`,
+	Example: `
+	# List roles
+	$ sentrytool role list
+	admin
+	customer
+	# List roles with groups
+	$ sentrytool role list -v
+	admin: (g1,g2,g3)
+	customer: (user_group)
+`,
 	Run: listRoles,
 }
 
