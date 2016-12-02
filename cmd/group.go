@@ -36,13 +36,13 @@ The remaining parameters are group names.
 
 Without subcommands lists groups.`,
 	Example: `
-  sentrytool
   sentrytool group list
   sentrytool group grant -r admin_role admin_group finance_group
   sentrytool group grant admin_role finance_group`,
 }
 
 func init() {
+	// ALl privilege commands operate on a role which can be supplied with -r flag
 	groupCmd.PersistentFlags().StringP("role", "r", "", "role name")
 	RootCmd.AddCommand(groupCmd)
 }

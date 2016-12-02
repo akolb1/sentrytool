@@ -25,21 +25,25 @@ import (
 type tMPProtocolFactory struct {
 }
 
+// GetProtocol returns Hive model protocol
 func (p *tMPProtocolFactory) GetProtocol(t thrift.TTransport) thrift.TProtocol {
 	protocol := thrift.NewTBinaryProtocolTransport(t)
 	return thrift.NewTMultiplexedProtocol(protocol, sentryProtocol)
 }
 
+// sentryCLient represents client handle for Hive model
 type sentryClient struct {
 	userName  string
 	transport thrift.TTransport
 	client    *sentry_policy_service.SentryPolicyServiceClient
 }
 
+// Close closes transport connection
 func (c *sentryClient) Close() {
 	c.transport.Close()
 }
 
+// getHiveClient returns client handle for Hive protocol
 func getHiveClient(host string, port int, user string) (*sentryClient, error) {
 	socket, err := thrift.NewTSocket(fmt.Sprintf("%s:%d", host, port))
 	if err != nil {
@@ -54,6 +58,7 @@ func getHiveClient(host string, port int, user string) (*sentryClient, error) {
 	return &sentryClient{userName: user, transport: transport, client: client}, nil
 }
 
+// CreateRole implements CreateRole API.
 func (c *sentryClient) CreateRole(name string) error {
 	arg := sentry_policy_service.NewTCreateSentryRoleRequest()
 	arg.RequestorUserName = c.userName
@@ -69,6 +74,7 @@ func (c *sentryClient) CreateRole(name string) error {
 	return nil
 }
 
+// RemoveRole implements RemoveRole API
 func (c *sentryClient) RemoveRole(name string) error {
 	arg := sentry_policy_service.NewTDropSentryRoleRequest()
 	arg.RequestorUserName = c.userName
@@ -83,6 +89,7 @@ func (c *sentryClient) RemoveRole(name string) error {
 	return nil
 }
 
+// ListRoleByGroup implements ListRoleByGroup API
 func (c *sentryClient) ListRoleByGroup(group string) ([]string,
 	[]*Role, error) {
 	arg := sentry_policy_service.NewTListSentryRolesRequest()
@@ -119,6 +126,7 @@ func (c *sentryClient) ListRoleByGroup(group string) ([]string,
 	return roleNames, roles, nil
 }
 
+// AddGroupsToRole implements AddGroupsToRole API
 func (c *sentryClient) AddGroupsToRole(role string, groups []string) error {
 	arg := sentry_policy_service.NewTAlterSentryRoleAddGroupsRequest()
 	arg.RequestorUserName = c.userName
@@ -141,6 +149,7 @@ func (c *sentryClient) AddGroupsToRole(role string, groups []string) error {
 	return nil
 }
 
+// RemoveGroupsFromRole implements RemoveGroupsFromRole API
 func (c *sentryClient) RemoveGroupsFromRole(role string, groups []string) error {
 	arg := sentry_policy_service.NewTAlterSentryRoleDeleteGroupsRequest()
 	arg.RequestorUserName = c.userName
@@ -163,6 +172,7 @@ func (c *sentryClient) RemoveGroupsFromRole(role string, groups []string) error 
 	return nil
 }
 
+// GrantPrivilege implements GrantPrivilege API
 func (c *sentryClient) GrantPrivilege(role string, priv *Privilege) error {
 	arg := sentry_policy_service.NewTAlterSentryRoleGrantPrivilegeRequest()
 	arg.RequestorUserName = c.userName
@@ -196,6 +206,7 @@ func (c *sentryClient) GrantPrivilege(role string, priv *Privilege) error {
 	return nil
 }
 
+// RevokePrivilege implements RevokePrivilege API
 func (c *sentryClient) RevokePrivilege(role string, priv *Privilege) error {
 	arg := sentry_policy_service.NewTAlterSentryRoleRevokePrivilegeRequest()
 	arg.RequestorUserName = c.userName
@@ -226,6 +237,7 @@ func (c *sentryClient) RevokePrivilege(role string, priv *Privilege) error {
 	return nil
 }
 
+// ListPrivilegesByRole implements ListPrivilegesByRole API
 func (c *sentryClient) ListPrivilegesByRole(roleName string) ([]*Privilege, error) {
 	arg := sentry_policy_service.NewTListSentryPrivilegesRequest()
 	arg.RequestorUserName = c.userName
@@ -238,7 +250,7 @@ func (c *sentryClient) ListPrivilegesByRole(roleName string) ([]*Privilege, erro
 
 	privList := make([]*Privilege, 0, len(result.Privileges))
 	for tPriv := range result.Privileges {
-		priv := &Privilege{
+		privilege := &Privilege{
 			Server:   tPriv.ServerName,
 			Database: tPriv.DbName,
 			Table:    tPriv.TableName,
@@ -246,9 +258,9 @@ func (c *sentryClient) ListPrivilegesByRole(roleName string) ([]*Privilege, erro
 			URI:      tPriv.URI,
 			Action:   tPriv.Action,
 		}
-		priv.GrantOption = tPriv.GrantOption ==
+		privilege.GrantOption = tPriv.GrantOption ==
 			sentry_policy_service.TSentryGrantOption_TRUE
-		privList = append(privList, priv)
+		privList = append(privList, privilege)
 	}
 
 	return privList, nil

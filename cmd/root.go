@@ -65,6 +65,7 @@ When a component is specified the tool uses Generic client model, otherwise it u
 legacy model.
 `,
 	Example: `
+  # Display everything
   $ sentrytool
   [roles]
   admin
@@ -75,7 +76,27 @@ legacy model.
   g3 = admin
   user_group = customer
   [privileges]
-`,
+
+  # List roles
+  $ sentrytool role list
+  admin
+  customer
+  # List roles with groups
+  $ sentrytool role list -v
+  admin: (g1,g2,g3)
+  customer: (user_group)
+
+  # Listing groups
+  sentrytool group list
+  # Grant and revoke groups to roles
+  sentrytool group grant -r admin_role admin_group finance_group
+  sentrytool group revoke admin_role finance_group
+
+  # Grant and list privileges
+  sentrytool privilege grant -r r1 -s server1 -d db2 -t table1 -c columnt1 \
+      -a insert
+  sentrytool privilege list r1 r1 = db=db1->action=all, \
+     server=server1->db=db2->table=table1->column=column1->action=insert`,
 }
 
 // Execute adds all child commands to the root command sets flags appropriately.
@@ -130,7 +151,7 @@ func initConfig() {
 
 	viper.SetConfigName(".sentrytool") // name of config file (without extension)
 	viper.AddConfigPath("$HOME")       // adding home directory as first search path
-	viper.SetEnvPrefix("sentry")
+	viper.SetEnvPrefix("sentry")       // All environment vars should start with SENTRY_
 	viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.

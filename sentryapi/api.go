@@ -68,32 +68,38 @@ type Privilege struct {
 }
 
 // ClientAPI is a generic Apache Sentry client interface.
+// The API is the same for the Generic or Hive model.
 type ClientAPI interface {
 	// Close closes the client connection
 	Close()
 	// CreateRole creates a role with given name
-	//   name - role name
-	CreateRole(name string) error
+	//   roleName - role name
+	CreateRole(roleName string) error
 	// RemoveRole removes role with given name
-	//   name - role name
-	RemoveRole(name string) error
+	//   roleName - role name
+	RemoveRole(roleName string) error
 	// ListRoleByGroup returns list of role names for a given group or all
 	// roles if group is nil
-	//   group - group name
-	ListRoleByGroup(group string) ([]string, []*Role, error)
+	//   groupName - group name
+	ListRoleByGroup(groupName string) ([]string, []*Role, error)
 	// AddGroupsToRole adds specified groups to the role
-	//   role - role name
+	//   roleName - role name
 	//   groups - list of group names to add
-	AddGroupsToRole(role string, groups []string) error
+	AddGroupsToRole(roleName string, groups []string) error
 	// RemoveGroupsFromRole removes specified groups from the role
-	//   role - role name
+	//   roleName - role name
 	//   groups - list of group names to remove
-	RemoveGroupsFromRole(role string, groups []string) error
+	RemoveGroupsFromRole(roleName string, groups []string) error
 	// GrantPrivilege grants privilege to the role
-	GrantPrivilege(role string, priv *Privilege) error
+	//   roleName - role name
+	//   priv - privilege to grant
+	GrantPrivilege(roleName string, priv *Privilege) error
 	// RevokePrivilege revokes privilege from the role
+	//  roleName - role name
+	//  priv - privilege to revoke
 	RevokePrivilege(roleName string, priv *Privilege) error
 	// ListPrivilegesByRole returns a list of privileges for the role
+	// role
 	ListPrivilegesByRole(roleName string) ([]*Privilege, error)
 }
 
