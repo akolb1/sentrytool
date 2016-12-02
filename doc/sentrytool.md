@@ -16,15 +16,36 @@ Java properties config files format. B default the file ~/.sentrytool.yaml is us
 
  The following environment variables are used:
 
-SENTRY_HOST:      Sentry server host name or IP address ('host' in the config file)
-SENTRY_PORT:      Listening port for the Sentry server ('port' in the config file)
-SENTRY_USER:      User name on which behalf the request is made ('user' in the config file)
-SENTRY_COMPONENT: Component name (e.g. 'kafka'). ('component' in the config file)
-SENRY_VERBOSE:    Use verbose mode if set ('verbose' in config file)
+* SENTRY_HOST:      Sentry server host name or IP address ('host' in the config file)
+* SENTRY_PORT:      Listening port for the Sentry server ('port' in the config file)
+* SENTRY_USER:      User name on which behalf the request is made ('user' in the config file)
+* SENTRY_COMPONENT: Component name (e.g. 'kafka'). ('component' in the config file)
+* SENRY_VERBOSE:    Use verbose mode if set ('verbose' in config file)
 
 When a component is specified the tool uses Generic client model, otherwise it uses the
 legacy model.
 
+
+```
+sentrytool
+```
+
+### Examples
+
+```
+
+  $ sentrytool
+  [roles]
+  admin
+  customer
+  [groups]
+  g1 = admin
+  g2 = admin
+  g3 = admin
+  user_group = customer
+  [privileges]
+
+```
 
 ### Options
 
