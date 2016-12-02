@@ -237,7 +237,7 @@ func (c *sentryClient) ListPrivilegesByRole(roleName string) ([]*Privilege, erro
 	}
 
 	privList := make([]*Privilege, 0, len(result.Privileges))
-	for tPriv, _ := range result.Privileges {
+	for tPriv := range result.Privileges {
 		priv := &Privilege{
 			Server:   tPriv.ServerName,
 			Database: tPriv.DbName,

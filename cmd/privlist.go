@@ -111,8 +111,9 @@ func listPriv(cmd *cobra.Command, args []string) error {
 		}
 		if len(privs) == 0 {
 			fmt.Println(roleName)
+		} else {
+			fmt.Println(roleName, "=", strings.Join(privs, ", "))
 		}
-		fmt.Println(roleName, "=", strings.Join(privs, ", "))
 
 	}
 	return nil

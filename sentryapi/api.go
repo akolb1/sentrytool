@@ -67,7 +67,7 @@ type Privilege struct {
 	UnsetGrantOption bool // True is grant option is unset
 }
 
-// SentryClientAPI is a generic Apache Sentry client interface.
+// ClientAPI is a generic Apache Sentry client interface.
 type ClientAPI interface {
 	// Close closes the client connection
 	Close()
