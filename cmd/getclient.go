@@ -24,7 +24,8 @@ func getClient() (sentryapi.ClientAPI, error) {
 		host, port, component, user)
 }
 
-// isValidRole returns true if role is valid
+// isValidRole returns true iff role is valid
+// Roles are validated against Sentry database, so validation involves a Thrift call.
 func isValidRole(client sentryapi.ClientAPI, roleName string) (bool, error) {
 	// Get existing roles
 	roles, _, err := client.ListRoleByGroup("")

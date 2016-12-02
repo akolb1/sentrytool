@@ -24,19 +24,17 @@ import (
 
 // roleCmd represents the role command
 var groupRemoveCmd = &cobra.Command{
-	Use:     "remove",
-	Aliases: []string{"revoke", "delete"},
+	Use:     "revoke",
+	Aliases: []string{"remove", "delete", "rm"},
 	Short:   "Remove group from a role",
 	Long: `Remove group from a role.
 A role should be either specified with -role flag or be the first argument
 followed by list of groups.
 
-If role is specified with -role flag, arguments are group names to remove.
-Examples:
-
-    group remove -r admin_role admin_group
-    group grant admin_role finance_group
-`,
+If role is specified with -role flag, arguments are group names to remove.`,
+	Example: `
+  group revoke admin_role admin_group finance_group
+  group revoke -r admin_role admin_group finance_group`,
 	RunE: removeGroupFromRole,
 }
 

@@ -20,13 +20,17 @@ import (
 
 	"github.com/akolb1/sentrytool/sentryapi"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var privListCmd = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"show", "ls"},
 	Short:   "list matching privileges",
-	RunE:    listPriv,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		viper.Set(verboseOpt, true)
+		return listPriv(cmd, args)
+	},
 	Long: `list all matching privileges for given roles.
 Roles are given as command-line arguments.
 
@@ -106,7 +110,7 @@ func listPriv(cmd *cobra.Command, args []string) error {
 			privs = append(privs, displayPrivilege(roleName, priv))
 		}
 		if len(privs) == 0 {
-			continue
+			fmt.Println(roleName)
 		}
 		fmt.Println(roleName, "=", strings.Join(privs, ", "))
 

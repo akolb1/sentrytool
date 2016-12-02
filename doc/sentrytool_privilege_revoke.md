@@ -5,10 +5,23 @@ revoke privilege
 ### Synopsis
 
 
-revoke privilege
+Revoke one or several privileges from a role. Privileges can be specified either using
+options or using sentry-style privilege specification. Any specification in the command-line
+override options.
+
+Multiple privileges may be set at the same time.
 
 ```
 sentrytool privilege revoke
+```
+
+### Examples
+
+```
+
+  $ sentrytool privilege revoke -s server2 -r admin \
+    'db=db4->table=mytable->action=insert' \
+    'db=db5->table=mytable->action=remove'
 ```
 
 ### Options inherited from parent commands

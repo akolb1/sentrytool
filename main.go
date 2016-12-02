@@ -18,7 +18,6 @@ import (
 	"github.com/akolb1/sentrytool/cmd"
 )
 
-
 func main() {
 	cmd.Execute()
 }

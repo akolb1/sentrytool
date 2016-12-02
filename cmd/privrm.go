@@ -24,9 +24,18 @@ import (
 
 var privRevokeCmd = &cobra.Command{
 	Use:     "revoke",
-	Aliases: []string{"remove", "delete"},
+	Aliases: []string{"remove", "delete", "rm"},
 	Short:   "revoke privilege",
-	RunE:    revokePrivilege,
+	Long: `Revoke one or several privileges from a role. Privileges can be specified either using
+options or using sentry-style privilege specification. Any specification in the command-line
+override options.
+
+Multiple privileges may be set at the same time.`,
+	Example: `
+  $ sentrytool privilege revoke -s server2 -r admin \
+    'db=db4->table=mytable->action=insert' \
+    'db=db5->table=mytable->action=remove'`,
+	RunE: revokePrivilege,
 }
 
 func revokePrivilege(cmd *cobra.Command, args []string) error {
@@ -35,8 +44,25 @@ func revokePrivilege(cmd *cobra.Command, args []string) error {
 		return errors.New("missing role name")
 	}
 
+	privs := args
 	if roleName == "" {
 		roleName = args[0]
+		privs = args[1:]
+	}
+
+	client, err := getClient()
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	defer client.Close()
+
+	isValid, err := isValidRole(client, roleName)
+	if err != nil {
+		return err
+	}
+	if !isValid {
+		return fmt.Errorf("role %s doesn't exist", roleName)
 	}
 
 	action, _ := cmd.Flags().GetString("action")
@@ -61,20 +87,34 @@ func revokePrivilege(cmd *cobra.Command, args []string) error {
 		Service:     service,
 	}
 
-	client, err := getClient()
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-	defer client.Close()
-
-	err = client.RevokePrivilege(roleName, priv)
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-
+	removePrivileges(client, roleName, priv, privs)
 	return nil
+}
+
+// Add multiple privileges to a role
+func removePrivileges(client sentryapi.ClientAPI, role string, template *sentryapi.Privilege,
+	args []string) {
+	// Without args, the template is our privilege
+	if len(args) == 0 {
+		err := client.RevokePrivilege(role, template)
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
+	// Privileges specified at the command line, parse them, fill unset parts from
+	// the template and grant them
+	for _, privSpec := range args {
+		privilege, err := parsePrivilege(privSpec, template)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+		err = client.RevokePrivilege(role, privilege)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+	}
 }
 
 func init() {

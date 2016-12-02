@@ -21,18 +21,29 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
+// groupListCmd manages listing of groups
 var groupListCmd = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"ls"},
 	Short:   "list groups",
 	RunE:    listGroups,
+	Long: `List groups specified in the command line. If no groups are specified, list all groups.
+Without -v flag, just prints group names. If '-v' flag is provided, provided group to roles mapping.
+`,
+	Example: `
+  sentrytool group list -v
+  admin_group = admin
+  finance_group = admin, customer
+  user_group = customer`,
 }
 
 // groupMap is a map from group name to list of roles
 type groupMap map[string][]string
 
+// listGroups displays groups and their associated roles
 func listGroups(cmd *cobra.Command, args []string) error {
 	client, err := getClient()
 	if err != nil {
@@ -74,8 +85,13 @@ func listGroups(cmd *cobra.Command, args []string) error {
 	sort.Strings(groups)
 
 	// Display all groups
+	verbose := viper.Get(verboseOpt).(bool)
 	for _, group := range groups {
-		fmt.Println(group, "=", strings.Join(groupMap[group], ", "))
+		if verbose {
+			fmt.Println(group, "=", strings.Join(groupMap[group], ", "))
+		} else {
+			fmt.Println(group)
+		}
 	}
 
 	return nil

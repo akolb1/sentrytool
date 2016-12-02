@@ -60,7 +60,7 @@ sentrytool
 
 ### SEE ALSO
 * [sentrytool doc](sentrytool_doc.md)	 - write documentation
-* [sentrytool group](sentrytool_group.md)	 - list, add or remove groups to the role
+* [sentrytool group](sentrytool_group.md)	 - list, add or remove groups
 * [sentrytool privilege](sentrytool_privilege.md)	 - privilege operations
 * [sentrytool role](sentrytool_role.md)	 - Sentry roles manipulation
 

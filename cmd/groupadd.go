@@ -22,26 +22,26 @@ import (
 	"github.com/spf13/viper"
 )
 
-// roleCmd represents the role command
+//  groupAddCmd represents the role command
 var groupAddCmd = &cobra.Command{
-	Use:     "add",
-	Aliases: []string{"grant"},
-	Short:   "add group to a role",
-	Long: `Add group to a role.
+	Use:     "grant",
+	Aliases: []string{"add"},
+	Short:   "grant group to a role",
+	Long: `Grant command associates group with a specific role.
 A role should be either specified with -role flag or be the first argument
 followed by list of groups.
 
-If -role flag is specified, arguments are group names to add.
+If -role flag is specified, arguments are group names to add.`,
 
-Examples:
-
-    group grant -r admin_role admin_group finance_group
-    group grant admin_role finance_group
-`,
-	RunE: addGroupToRole,
+	Example: `
+  sentrytool group grant -r admin_role admin_group finance_group
+  sentrytool group grant admin_role finance_group`,
+	RunE: addGroupsToRole,
 }
 
-func addGroupToRole(cmd *cobra.Command, args []string) error {
+// addGroupToRole adds a set of groups to the specific role
+func addGroupsToRole(cmd *cobra.Command, args []string) error {
+	// Get role name
 	roleName, _ := cmd.Flags().GetString("role")
 	if len(args) == 0 || (roleName == "" && len(args) == 1) {
 		return errors.New("missing group name")
@@ -53,6 +53,7 @@ func addGroupToRole(cmd *cobra.Command, args []string) error {
 		groups = args[1:]
 	}
 
+	// Get Thrift client
 	client, err := getClient()
 	if err != nil {
 		fmt.Println(err)
@@ -78,7 +79,7 @@ func addGroupToRole(cmd *cobra.Command, args []string) error {
 
 	verbose := viper.Get(verboseOpt).(bool)
 	if verbose {
-		fmt.Println("Added groups to role", roleName)
+		listGroups(cmd, groups)
 	}
 
 	return nil

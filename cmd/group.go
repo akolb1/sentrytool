@@ -14,26 +14,35 @@
 
 package cmd
 
-import "github.com/spf13/cobra"
+import (
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+)
 
-// roleCmd represents the role command
+// groupCmd represents the role command
 var groupCmd = &cobra.Command{
-	Use:   "group",
-	Short: "list, add or remove groups to the role",
-	Long: `List, add or remove groups to the role.
+	Use:     "group",
+	Aliases: []string{"g"},
+	RunE: func(cmd *cobra.Command, args []string) error {
+		viper.Set(verboseOpt, true)
+		return listGroups(cmd, args)
+	},
+	Short: "list, add or remove groups",
+	Long: `group command manages Sentry groups. A group can be added to a role or removed from a role.
+A single group can belong to multiple roles.
+
 The role is specified with either '-r' flag ro as the first parameter.
 The remaining parameters are group names.
 
-Examples:
-
-    group list
-    group grant -r admin_role admin_group finance_group
-    group grant admin_role finance_group
-`,
-	RunE:  listGroups,
+Without subcommands lists groups.`,
+	Example: `
+  sentrytool
+  sentrytool group list
+  sentrytool group grant -r admin_role admin_group finance_group
+  sentrytool group grant admin_role finance_group`,
 }
 
 func init() {
-	groupCmd.PersistentFlags().StringP("role", "r", "", "roleName")
+	groupCmd.PersistentFlags().StringP("role", "r", "", "role name")
 	RootCmd.AddCommand(groupCmd)
 }

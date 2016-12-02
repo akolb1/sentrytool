@@ -8,17 +8,19 @@ privilege operations
 privilege operations: list, grant or revoke privileges.
 Argument is a list of roles.
 
-Examples:
+```
+sentrytool privilege
+```
 
-  sentrytool privilege create -r r1 -s server1 -d db2 -t table1 -c columnt1 \
+### Examples
+
+```
+
+  sentrytool privilege grant -r r1 -s server1 -d db2 -t table1 -c columnt1 \
       -a insert
   sentrytool privilege list r1
 r1 = db=db1->action=all, \
      server=server1->db=db2->table=table1->column=column1->action=insert
-
-
-```
-sentrytool privilege
 ```
 
 ### Options

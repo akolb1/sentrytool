@@ -19,19 +19,33 @@ import (
 	"github.com/spf13/cobra/doc"
 )
 
+const (
+	sentryTitle = "Sentry"
+	manSection  = "3"
+)
+
 // docCmd represents command for writing documentation
 var docCmd = &cobra.Command{
 	Use:     "doc",
 	Aliases: []string{"man"},
 	Short:   "write documentation",
-	Long:    `Write sentrytool documentation.`,
+	Long: `Write sentrytool documentation.
+The documentation is used for generating .md tool documentation on github.
+This command should be used whenever any interfaces are made.
+`,
+	Example: `
+  # Generate .md markup help
+  sentrytool doc --dir doc
+  # Generate man pages
+  sentrytool doc --dir doc --man
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 		docdir, _ := cmd.Flags().GetString("dir")
 		isMan, _ := cmd.Flags().GetBool("man")
 		if isMan {
 			header := &doc.GenManHeader{
-				Title:   "Sentry",
-				Section: "3",
+				Title:   sentryTitle,
+				Section: manSection,
 			}
 			doc.GenManTree(RootCmd, header, docdir)
 		} else {

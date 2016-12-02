@@ -43,7 +43,7 @@ var (
 var RootCmd = &cobra.Command{
 	Use:   "sentrytool",
 	Short: "Command-line interface to Apache Sentry",
-	Run: listAll,
+	Run:   listAll,
 	Long: `Command-line interface to Apache Sentry.
 See https://github.com/akolb1/sentrytool/blob/master/doc/sentrytool.md for full documentation
 
@@ -89,6 +89,7 @@ func Execute() {
 
 // listAllCmd shows all roles, groups and privileges
 func listAll(cmd *cobra.Command, args []string) {
+	viper.Set(verboseOpt, true)
 	fmt.Println("[roles]")
 	listRoles(cmd, args)
 	fmt.Println("[groups]")
