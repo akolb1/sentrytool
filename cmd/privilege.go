@@ -20,6 +20,7 @@ import (
 
 	"github.com/akolb1/sentrytool/sentryapi"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 /*
@@ -48,7 +49,13 @@ var privCmd = &cobra.Command{
 	Use:     "privilege",
 	Aliases: []string{"priv", "p"},
 	Short:   "privilege operations",
-	RunE:    listPriv,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		viper.Set(verboseOpt, true)
+		if len(args) != 0 {
+			return fmt.Errorf("invalid subcommand %s", args[1])
+		}
+		return listPriv(cmd, args)
+	},
 	Long: `privilege operations: list, grant or revoke privileges.
 Argument is a list of roles.`,
 	Example: `

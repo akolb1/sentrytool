@@ -15,6 +15,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -25,6 +27,9 @@ var groupCmd = &cobra.Command{
 	Aliases: []string{"g"},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		viper.Set(verboseOpt, true)
+		if len(args) != 0 {
+			return fmt.Errorf("invalid subcommand %s", args[1])
+		}
 		return listGroups(cmd, args)
 	},
 	Short: "list, add or remove groups",

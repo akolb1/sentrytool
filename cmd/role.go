@@ -17,6 +17,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"fmt"
 )
 
 // roleCmd represents the role command
@@ -35,9 +36,13 @@ Multiple roles can be created or removed with a single command.`,
 	admin: (g1,g2,g3)
 	customer: (user_group)
 `,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		viper.Set(verboseOpt, true)
+		if len(args) != 0 {
+			return fmt.Errorf("invalid subcommand %s", args[1])
+		}
 		listRoles(cmd, args)
+		return nil
 	},
 }
 

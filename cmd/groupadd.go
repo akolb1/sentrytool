@@ -25,7 +25,7 @@ import (
 //  groupAddCmd represents the role command
 var groupAddCmd = &cobra.Command{
 	Use:     "grant",
-	Aliases: []string{"add"},
+	Aliases: []string{"add", "create"},
 	RunE:    addGroupsToRole,
 	Short:   "grant group to a role",
 	Long: `Grant command associates group with a specific role.
@@ -42,6 +42,7 @@ If -role flag is specified, arguments are group names to add.`,
   # Revoke group from role
   sentrytool group revoke -r admin_role admin_group`,
 }
+
 
 // addGroupToRole adds a set of groups to the specific role
 func addGroupsToRole(cmd *cobra.Command, args []string) error {

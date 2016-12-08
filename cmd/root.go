@@ -24,7 +24,7 @@ import (
 )
 
 const (
-	defaultThriftPort = 8038
+	defaultThriftPort = "8038"
 	hostOpt           = "host"
 	portOpt           = "port"
 	userOpt           = "username"
@@ -130,7 +130,7 @@ func init() {
 
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.sentrytool.yaml)")
 	RootCmd.PersistentFlags().StringP(hostOpt, "H", "localhost", "hostname for Sentry server")
-	RootCmd.PersistentFlags().IntP(portOpt, "P", defaultThriftPort, "port for Sentry server")
+	RootCmd.PersistentFlags().StringP(portOpt, "P", defaultThriftPort, "port for Sentry server")
 	RootCmd.PersistentFlags().StringP(userOpt, "U", currentUser.Username, "user name")
 	RootCmd.PersistentFlags().StringP(componentOpt, "C", "", "sentry client component")
 	RootCmd.PersistentFlags().BoolP(verboseOpt, "v", false, "verbose mode")

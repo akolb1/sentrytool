@@ -3,6 +3,8 @@ package cmd
 import (
 	"github.com/akolb1/sentrytool/sentryapi"
 	"github.com/spf13/viper"
+	"strconv"
+	"fmt"
 )
 
 // getClient returns Sentry API client, extracting parameters like host and port
@@ -12,16 +14,21 @@ import (
 // protocol
 func getClient() (sentryapi.ClientAPI, error) {
 	host := viper.Get(hostOpt).(string)
-	port := viper.Get(portOpt).(int)
+	port := viper.Get(portOpt).(string)
 	user := viper.Get(userOpt).(string)
 	component := viper.Get(componentOpt).(string)
 
+	portVal, err := strconv.Atoi(port)
+	if (err != nil) {
+		return nil, fmt.Errorf("invalid port: %v", err)
+	}
+
 	if component == "" {
 		return sentryapi.GetClient(sentryapi.PolicyProtocol,
-			host, port, component, user)
+			host, portVal, component, user)
 	}
 	return sentryapi.GetClient(sentryapi.GenericPolicyProtocol,
-		host, port, component, user)
+		host, portVal, component, user)
 }
 
 // isValidRole returns true iff role is valid
