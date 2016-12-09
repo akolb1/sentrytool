@@ -44,8 +44,27 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
+func ExampleSentryClient_CreateRole() {
+	roleName := "exampleRole"
+	err := client.CreateRole(roleName)
+	if err != nil {
+		fmt.Println("failed to create role: ", err)
+		os.Exit(1);
+	}
+	fmt.Println("Created role", roleName)
+	err = client.RemoveRole(roleName)
+	if err != nil {
+		fmt.Println("failed to create role: ", err)
+		os.Exit(1);
+	}
+	fmt.Println("Removed role", roleName)
+	// Output:
+	// Created role exampleRole
+	// Removed role exampleRole
+}
+
 func TestSentryClient_CreateRole(t *testing.T) {
-	roleName := "testRole"
+	roleName := "sentryTestRole"
 	err := client.CreateRole(roleName)
 	if err != nil {
 		t.Error(err)
