@@ -239,6 +239,7 @@ func (c *genericSentryClient) RevokePrivilege(role string, priv *Privilege) erro
 	return nil
 }
 
-func (c *genericSentryClient) ListPrivilegesByRole(roleName string) ([]*Privilege, error) {
+func (c *genericSentryClient) ListPrivilegesByRole(roleName string,
+	template *Privilege) ([]*Privilege, error) {
 	return nil, errors.New("ListPrivilegesByRole is not implemented for generic service")
 }

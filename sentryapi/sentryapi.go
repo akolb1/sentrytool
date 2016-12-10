@@ -247,10 +247,20 @@ func (c *sentryClient) RevokePrivilege(role string, priv *Privilege) error {
 }
 
 // ListPrivilegesByRole implements ListPrivilegesByRole API
-func (c *sentryClient) ListPrivilegesByRole(roleName string) ([]*Privilege, error) {
+func (c *sentryClient) ListPrivilegesByRole(roleName string,
+	template *Privilege) ([]*Privilege, error) {
 	arg := sentry_policy_service.NewTListSentryPrivilegesRequest()
 	arg.RequestorUserName = c.userName
 	arg.RoleName = roleName
+	if template != nil {
+		auth := sentry_policy_service.NewTSentryAuthorizable()
+		auth.Server = template.Server
+		auth.Db = &template.Database
+		auth.Table = &template.Table
+		auth.Column = &template.Column
+		auth.URI = &template.URI
+		arg.AuthorizableHierarchy = auth
+	}
 
 	result, err := c.client.ListSentryPrivilegesByRole(arg)
 	if err != nil {

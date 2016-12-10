@@ -99,8 +99,9 @@ type ClientAPI interface {
 	//  priv - privilege to revoke
 	RevokePrivilege(roleName string, priv *Privilege) error
 	// ListPrivilegesByRole returns a list of privileges for the role
-	// role
-	ListPrivilegesByRole(roleName string) ([]*Privilege, error)
+	// role.
+	// If template is not NULL, only return privileges matching template
+	ListPrivilegesByRole(roleName string, template *Privilege) ([]*Privilege, error)
 }
 
 // GetClient returns a Sentry client implementation

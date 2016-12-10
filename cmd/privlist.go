@@ -63,6 +63,16 @@ func listPriv(cmd *cobra.Command, args []string) error {
 	grant, _ := cmd.Flags().GetBool("grantoption")
 	service, _ := cmd.Flags().GetString("service")
 
+	template := sentryapi.Privilege{
+		Server: server,
+		Database: database,
+		Table: table,
+		Column: column,
+		URI: uri,
+		Scope: scope,
+		GrantOption: grant,
+	}
+
 	for _, roleName := range roles {
 		isValid, err := isValidRole(client, roleName)
 		if err != nil {
@@ -71,7 +81,7 @@ func listPriv(cmd *cobra.Command, args []string) error {
 		if !isValid {
 			return fmt.Errorf("role %s doesn't exist", roleName)
 		}
-		privList, err := client.ListPrivilegesByRole(roleName)
+		privList, err := client.ListPrivilegesByRole(roleName, &template)
 		if err != nil {
 			fmt.Println(toAPIError(err))
 			continue

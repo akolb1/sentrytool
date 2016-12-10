@@ -169,9 +169,9 @@ func BenchmarkSentryClient_ListPrivilegesByRole(b *testing.B) {
 	}
 
 	for i := 0; i < b.N; i++ {
-		_, err := client.ListPrivilegesByRole(roleName)
+		_, err := client.ListPrivilegesByRole(roleName, nil)
 		if err != nil {
-			b.Errorf("can't list privileges")
+			b.Error("can't list privileges")
 			break
 		}
 	}
