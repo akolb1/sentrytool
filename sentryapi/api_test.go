@@ -160,3 +160,59 @@ func BenchmarkGenericSentryClient_CreateRoles(b *testing.B) {
 		}
 	}
 }
+
+func BenchmarkSentryClient_ListPrivilegesByRole(b *testing.B) {
+	roleName := "testRole"
+	err := client.CreateRole(roleName)
+	if err != nil {
+		b.Fail()
+	}
+
+	for i := 0; i < b.N; i++ {
+		_, err := client.ListPrivilegesByRole(roleName)
+		if err != nil {
+			b.Errorf("can't list privileges")
+			break
+		}
+	}
+
+	err = client.RemoveRole(roleName)
+	if err != nil {
+		b.Fail()
+	}
+}
+
+func BenchmarkSentryClient_GrantAndRevokePrivilege(b *testing.B) {
+	roleName := "testRole"
+	err := client.CreateRole(roleName)
+	if err != nil {
+		b.Fail()
+	}
+	priv := Privilege{
+		Server:      "some_server",
+		Database:    "some_database",
+		Table:       "some_table",
+		Column:      "some_column",
+		URI:         "some_uri",
+		Action:      "all",
+		GrantOption: true,
+	}
+
+	for i := 0; i < b.N; i++ {
+		err := client.GrantPrivilege(roleName, &priv)
+		if err != nil {
+			b.Errorf("can't grant privilege: %v", err)
+			break
+		}
+		err = client.RevokePrivilege(roleName, &priv)
+		if err != nil {
+			b.Errorf("can't revoke privilege: %v", err)
+			break
+		}
+	}
+
+	err = client.RemoveRole(roleName)
+	if err != nil {
+		b.Fail()
+	}
+}
