@@ -120,3 +120,9 @@ func GetClient(protocol ProtocolType, host string, port int,
 		return nil, fmt.Errorf("invalid protocol %s", protocol.String())
 	}
 }
+
+// ApiError is an extension to error type that also contains source stack trace.
+type ApiError struct {
+	Error      error
+	StackTrace *string
+}
