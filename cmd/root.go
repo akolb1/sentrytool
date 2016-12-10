@@ -62,6 +62,16 @@ Java properties config files format. B default the file ~/.sentrytool.yaml is us
 * SENTRY_COMPONENT: Component name (e.g. 'kafka'). ('component' in the config file)
 * SENRY_VERBOSE:    Use verbose mode if set ('verbose' in config file)
 
+Host may be specified in one of the following ways:
+
+* 1.2.3.4
+* host.domain.com
+* host:port
+* host1,host2:port2, host4:port3
+
+When multiple hosts are specified, the wirst responding host is used.
+The value of port from the host string overrides all other values for a port.
+
 When a component is specified the tool uses Generic client model, otherwise it uses the
 legacy model.
 `,

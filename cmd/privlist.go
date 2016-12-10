@@ -64,12 +64,12 @@ func listPriv(cmd *cobra.Command, args []string) error {
 	service, _ := cmd.Flags().GetString("service")
 
 	template := sentryapi.Privilege{
-		Server: server,
-		Database: database,
-		Table: table,
-		Column: column,
-		URI: uri,
-		Scope: scope,
+		Server:      server,
+		Database:    database,
+		Table:       table,
+		Column:      column,
+		URI:         uri,
+		Scope:       scope,
 		GrantOption: grant,
 	}
 
