@@ -71,7 +71,7 @@ func createRemoveRole(client ClientAPI, roleName string) error {
 	return nil
 }
 
-func ExampleSentryClient_CreateRole() {
+func ExampleClientAPI_CreateRole() {
 	roleName := "exampleRole"
 	err := client.CreateRole(roleName)
 	if err != nil {

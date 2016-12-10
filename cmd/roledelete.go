@@ -39,9 +39,13 @@ func roleDelete(cmd *cobra.Command, args []string) {
 	}
 	defer client.Close()
 
-	verbose := viper.Get(verboseOpt).(bool)
+	verbose := viper.GetBool(verboseOpt)
 
 	roles, _, err := getRoles(cmd, args, true, client)
+	if err != nil {
+		fmt.Println(toAPIError(err))
+		return
+	}
 
 	for _, roleName := range roles {
 		force, _ := cmd.Flags().GetBool(forceOpt)
@@ -50,7 +54,7 @@ func roleDelete(cmd *cobra.Command, args []string) {
 		}
 		err = client.RemoveRole(roleName)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println(toAPIError(err))
 			continue
 		}
 		if verbose {

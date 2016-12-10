@@ -69,7 +69,8 @@ func (c *sentryClient) CreateRole(name string) error {
 	}
 
 	if result.GetStatus().GetValue() != 0 {
-		return fmt.Errorf("%s", result.GetStatus().Message)
+		return newAPIError(fmt.Errorf("%s", result.GetStatus().Message),
+			result.GetStatus().Stack)
 	}
 	return nil
 }
@@ -84,7 +85,8 @@ func (c *sentryClient) RemoveRole(name string) error {
 		return fmt.Errorf("failed to remove Sentry role %s: %s", name, err)
 	}
 	if result.GetStatus().GetValue() != 0 {
-		return fmt.Errorf("%s", result.GetStatus().Message)
+		return newAPIError(fmt.Errorf("%s", result.GetStatus().Message),
+			result.GetStatus().Stack)
 	}
 	return nil
 }
@@ -106,7 +108,10 @@ func (c *sentryClient) ListRoleByGroup(group string) ([]string,
 	}
 
 	if result.GetStatus().GetValue() != 0 {
-		return nil, nil, fmt.Errorf("%s", result.GetStatus().Message)
+		if result.GetStatus().GetValue() != 0 {
+			return nil, nil, newAPIError(fmt.Errorf("%s", result.GetStatus().Message),
+				result.GetStatus().Stack)
+		}
 	}
 	roleNames := make([]string, 0, 8)
 	roles := make([]*Role, 0, 8)
@@ -143,7 +148,8 @@ func (c *sentryClient) AddGroupsToRole(role string, groups []string) error {
 		return fmt.Errorf("failed to add groups: %s", err)
 	}
 	if result.GetStatus().GetValue() != 0 {
-		return fmt.Errorf("%s", result.GetStatus().Message)
+		return newAPIError(fmt.Errorf("%s", result.GetStatus().Message),
+			result.GetStatus().Stack)
 	}
 
 	return nil
@@ -166,7 +172,8 @@ func (c *sentryClient) RemoveGroupsFromRole(role string, groups []string) error 
 		return fmt.Errorf("failed to remove groups: %s", err)
 	}
 	if result.GetStatus().GetValue() != 0 {
-		return fmt.Errorf("%s", result.GetStatus().Message)
+		return newAPIError(fmt.Errorf("%s", result.GetStatus().Message),
+			result.GetStatus().Stack)
 	}
 
 	return nil
@@ -200,7 +207,8 @@ func (c *sentryClient) GrantPrivilege(role string, priv *Privilege) error {
 		return fmt.Errorf("failed to grant privilege: %s", err)
 	}
 	if result.GetStatus().GetValue() != 0 {
-		return fmt.Errorf("%s", result.GetStatus().Message)
+		return newAPIError(fmt.Errorf("%s", result.GetStatus().Message),
+			result.GetStatus().Stack)
 	}
 
 	return nil
@@ -231,7 +239,8 @@ func (c *sentryClient) RevokePrivilege(role string, priv *Privilege) error {
 		return fmt.Errorf("failed to revoke privilege: %s", err)
 	}
 	if result.GetStatus().GetValue() != 0 {
-		return fmt.Errorf("%s", result.GetStatus().Message)
+		return newAPIError(fmt.Errorf("%s", result.GetStatus().Message),
+			result.GetStatus().Stack)
 	}
 
 	return nil
@@ -246,6 +255,10 @@ func (c *sentryClient) ListPrivilegesByRole(roleName string) ([]*Privilege, erro
 	result, err := c.client.ListSentryPrivilegesByRole(arg)
 	if err != nil {
 		return nil, fmt.Errorf("failed to list privileges: %s", err)
+	}
+	if result.GetStatus().GetValue() != 0 {
+		return nil, newAPIError(fmt.Errorf("%s", result.GetStatus().Message),
+			result.GetStatus().Stack)
 	}
 
 	privList := make([]*Privilege, 0, len(result.Privileges))

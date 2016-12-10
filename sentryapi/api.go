@@ -121,8 +121,24 @@ func GetClient(protocol ProtocolType, host string, port int,
 	}
 }
 
-// ApiError is an extension to error type that also contains source stack trace.
-type ApiError struct {
-	Error      error
-	StackTrace *string
+// APIError is an extension to error type that also contains source stack trace.
+type APIError struct {
+	Err        error
+	StackTrace string
+}
+
+func (err *APIError) Error() string {
+	return err.Err.Error()
+}
+
+// newApiError returns an initialized instance of ApiError.
+func newAPIError(err error, stackP *string) *APIError {
+	var stack string
+	if stackP != nil {
+		stack = *stackP
+	}
+	return &APIError{
+		Err:        err,
+		StackTrace: stack,
+	}
 }

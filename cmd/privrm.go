@@ -98,7 +98,7 @@ func removePrivileges(client sentryapi.ClientAPI, role string, template *sentrya
 	if len(args) == 0 {
 		err := client.RevokePrivilege(role, template)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println(toAPIError(err))
 		}
 	}
 	// Privileges specified at the command line, parse them, fill unset parts from
@@ -111,7 +111,7 @@ func removePrivileges(client sentryapi.ClientAPI, role string, template *sentrya
 		}
 		err = client.RevokePrivilege(role, privilege)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println(toAPIError(err))
 			continue
 		}
 	}

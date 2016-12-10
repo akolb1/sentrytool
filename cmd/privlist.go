@@ -48,7 +48,7 @@ func listPriv(cmd *cobra.Command, args []string) error {
 
 	roles, _, err := getRoles(cmd, args, true, client)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(toAPIError(err))
 		return nil
 	}
 
@@ -73,7 +73,7 @@ func listPriv(cmd *cobra.Command, args []string) error {
 		}
 		privList, err := client.ListPrivilegesByRole(roleName)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println(toAPIError(err))
 			continue
 		}
 

@@ -15,9 +15,10 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"fmt"
 )
 
 // roleCmd represents the role command

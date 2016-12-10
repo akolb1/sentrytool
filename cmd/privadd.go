@@ -108,7 +108,7 @@ func addPrivileges(client sentryapi.ClientAPI, role string, template *sentryapi.
 	if len(args) == 0 {
 		err := client.GrantPrivilege(role, template)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println(toAPIError(err))
 		}
 	}
 	// Privileges specified at the command line, parse them, fill unset parts from
@@ -121,7 +121,7 @@ func addPrivileges(client sentryapi.ClientAPI, role string, template *sentryapi.
 		}
 		err = client.GrantPrivilege(role, privilege)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println(toAPIError(err))
 			continue
 		}
 	}

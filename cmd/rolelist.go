@@ -118,11 +118,11 @@ func listRoles(cmd *cobra.Command, args []string) {
 
 	roles, roleGroups, err := getRoles(cmd, args, true, client)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(toAPIError(err))
 		return
 	}
 
-	verbose := viper.Get(verboseOpt).(bool)
+	verbose := viper.GetBool(verboseOpt)
 
 	for _, r := range roles {
 		if !verbose {

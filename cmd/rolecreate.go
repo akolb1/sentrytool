@@ -40,7 +40,7 @@ func roleCreate(cmd *cobra.Command, args []string) {
 	// Get existing roles
 	roles, _, err := client.ListRoleByGroup("")
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(toAPIError(err))
 		return
 	}
 
@@ -49,7 +49,7 @@ func roleCreate(cmd *cobra.Command, args []string) {
 		existingRoles[role] = true
 	}
 
-	verbose := viper.Get(verboseOpt).(bool)
+	verbose := viper.GetBool(verboseOpt)
 	for _, roleName := range args {
 		if existingRoles[roleName] {
 			fmt.Println("role", roleName, "already exist: not created")
@@ -57,7 +57,7 @@ func roleCreate(cmd *cobra.Command, args []string) {
 		}
 		err = client.CreateRole(roleName)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println(toAPIError(err))
 			continue
 		}
 		existingRoles[roleName] = true

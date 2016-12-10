@@ -60,7 +60,7 @@ func removeGroupFromRole(cmd *cobra.Command, args []string) error {
 	// Verify that roleName is valid
 	isValid, err := isValidRole(client, roleName)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(toAPIError(err))
 		return nil
 	}
 	if !isValid {
@@ -69,11 +69,11 @@ func removeGroupFromRole(cmd *cobra.Command, args []string) error {
 
 	// Remove groups to the role
 	if err = client.RemoveGroupsFromRole(roleName, groups); err != nil {
-		fmt.Println(err)
+		fmt.Println(toAPIError(err))
 		return nil
 	}
 
-	verbose := viper.Get(verboseOpt).(bool)
+	verbose := viper.GetBool(verboseOpt)
 	if verbose {
 		fmt.Println("removed groups from role", roleName)
 	}

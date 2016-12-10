@@ -33,6 +33,7 @@ const (
 	forceOpt          = "force"
 	componentOpt      = "component"
 	verboseOpt        = "verbose"
+	jstackOpt         = "jstack"
 )
 
 var (
@@ -134,6 +135,7 @@ func init() {
 	RootCmd.PersistentFlags().StringP(userOpt, "U", currentUser.Username, "user name")
 	RootCmd.PersistentFlags().StringP(componentOpt, "C", "", "sentry client component")
 	RootCmd.PersistentFlags().BoolP(verboseOpt, "v", false, "verbose mode")
+	RootCmd.PersistentFlags().BoolP(jstackOpt, "J", false, "show Java stack on for errors")
 
 	// Bind flags to viper variables
 	viper.BindPFlags(RootCmd.PersistentFlags())
@@ -152,7 +154,7 @@ func initConfig() {
 	viper.SetConfigName(".sentrytool") // name of config file (without extension)
 	viper.AddConfigPath("$HOME")       // adding home directory as first search path
 	viper.SetEnvPrefix("sentry")       // All environment vars should start with SENTRY_
-	viper.AutomaticEnv() // read in environment variables that match
+	viper.AutomaticEnv()               // read in environment variables that match
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {

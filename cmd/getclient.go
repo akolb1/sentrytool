@@ -1,10 +1,10 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/akolb1/sentrytool/sentryapi"
 	"github.com/spf13/viper"
-	"strconv"
-	"fmt"
 )
 
 // getClient returns Sentry API client, extracting parameters like host and port
@@ -13,22 +13,17 @@ import (
 // If component is specified, it uses Generic sentry protocol, otherwise it uses legacy
 // protocol
 func getClient() (sentryapi.ClientAPI, error) {
-	host := viper.Get(hostOpt).(string)
-	port := viper.Get(portOpt).(string)
-	user := viper.Get(userOpt).(string)
-	component := viper.Get(componentOpt).(string)
-
-	portVal, err := strconv.Atoi(port)
-	if (err != nil) {
-		return nil, fmt.Errorf("invalid port: %v", err)
-	}
+	host := viper.GetString(hostOpt)
+	user := viper.GetString(userOpt)
+	component := viper.GetString(componentOpt)
+	port := viper.GetInt(portOpt)
 
 	if component == "" {
 		return sentryapi.GetClient(sentryapi.PolicyProtocol,
-			host, portVal, component, user)
+			host, port, component, user)
 	}
 	return sentryapi.GetClient(sentryapi.GenericPolicyProtocol,
-		host, portVal, component, user)
+		host, port, component, user)
 }
 
 // isValidRole returns true iff role is valid
@@ -45,4 +40,20 @@ func isValidRole(client sentryapi.ClientAPI, roleName string) (bool, error) {
 		}
 	}
 	return false, nil
+}
+
+// toError converts ApiError t regular error if java stack was requested.
+// All other errors are returned as is.
+func toAPIError(err error) error {
+	if !viper.GetBool(jstackOpt) {
+		return err
+	}
+	if apiErr, ok := err.(*sentryapi.APIError); ok {
+		stack := apiErr.StackTrace
+		if stack == "" {
+			return apiErr.Err
+		}
+		return fmt.Errorf("%v\nServer Stacktrace:\n%s", err, stack)
+	}
+	return err
 }

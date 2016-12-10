@@ -43,7 +43,6 @@ If -role flag is specified, arguments are group names to add.`,
   sentrytool group revoke -r admin_role admin_group`,
 }
 
-
 // addGroupToRole adds a set of groups to the specific role
 func addGroupsToRole(cmd *cobra.Command, args []string) error {
 	// Get role name
@@ -69,7 +68,7 @@ func addGroupsToRole(cmd *cobra.Command, args []string) error {
 	// Verify that roleName is valid
 	isValid, err := isValidRole(client, roleName)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(toAPIError(err))
 		return nil
 	}
 	if !isValid {
@@ -78,11 +77,11 @@ func addGroupsToRole(cmd *cobra.Command, args []string) error {
 
 	// Add groups to the role
 	if err = client.AddGroupsToRole(roleName, groups); err != nil {
-		fmt.Println(err)
+		fmt.Println(toAPIError(err))
 		return nil
 	}
 
-	verbose := viper.Get(verboseOpt).(bool)
+	verbose := viper.GetBool(verboseOpt)
 	if verbose {
 		listGroups(cmd, groups)
 	}

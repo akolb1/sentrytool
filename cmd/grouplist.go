@@ -63,7 +63,7 @@ func listGroups(cmd *cobra.Command, args []string) error {
 	// Get list of all groups and their roles
 	_, roleGroups, err := getRoles(cmd, nil, true, client)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(toAPIError(err))
 		return nil
 	}
 
@@ -85,7 +85,7 @@ func listGroups(cmd *cobra.Command, args []string) error {
 	sort.Strings(groups)
 
 	// Display all groups
-	verbose := viper.Get(verboseOpt).(bool)
+	verbose := viper.GetBool(verboseOpt)
 	for _, group := range groups {
 		if verbose {
 			fmt.Println(group, "=", strings.Join(groupMap[group], ", "))
