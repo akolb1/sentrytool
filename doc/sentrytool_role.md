@@ -31,6 +31,7 @@ sentrytool role
 
 ```
   -m, --match string   regexp matching role
+      --noverify       do not verify role existence
 ```
 
 ### Options inherited from parent commands
@@ -40,7 +41,6 @@ sentrytool role
       --config string      config file (default is $HOME/.sentrytool.yaml)
   -H, --host string        hostname for Sentry server (default "localhost")
   -J, --jstack             show Java stack on for errors
-      --noverify           do not verify role existence
   -P, --port string        port for Sentry server (default "8038")
   -U, --username string    user name (default "akolb")
   -v, --verbose            verbose mode

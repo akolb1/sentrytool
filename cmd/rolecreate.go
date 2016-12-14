@@ -70,5 +70,6 @@ func roleCreate(cmd *cobra.Command, args []string) {
 }
 
 func init() {
+	roleCmd.Flags().BoolP(noverifyOpt, "", false, "do not verify role existence")
 	roleCmd.AddCommand(roleCreateCmd)
 }

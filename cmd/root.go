@@ -147,7 +147,6 @@ func init() {
 	RootCmd.PersistentFlags().StringP(componentOpt, "C", "", "sentry client component")
 	RootCmd.PersistentFlags().BoolP(verboseOpt, "v", false, "verbose mode")
 	RootCmd.PersistentFlags().BoolP(jstackOpt, "J", false, "show Java stack on for errors")
-	RootCmd.PersistentFlags().BoolP(noverifyOpt, "", false, "do not verify role existence")
 
 	// Bind flags to viper variables
 	viper.BindPFlags(RootCmd.PersistentFlags())

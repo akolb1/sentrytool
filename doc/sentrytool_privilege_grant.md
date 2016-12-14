@@ -45,7 +45,6 @@ sentrytool privilege grant
       --grantoption        grantOption
   -H, --host string        hostname for Sentry server (default "localhost")
   -J, --jstack             show Java stack on for errors
-      --noverify           do not verify role existence
   -P, --port string        port for Sentry server (default "8038")
   -r, --role string        role name
       --scope string       Scope
