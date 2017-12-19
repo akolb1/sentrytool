@@ -18,7 +18,7 @@ import (
 	"fmt"
 
 	"git.apache.org/thrift.git/lib/go/thrift"
-	"github.com/akolb1/sentrytool/sentryapi/thrift/sentry_policy_service"
+	"github.com/akolb1/sentrytool/sentryapi/thrift/gen-go/sentry_policy_service"
 )
 
 // TMPProtocolFactory is a multiplexing protocol factory

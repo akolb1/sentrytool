@@ -20,7 +20,7 @@ import (
 	"errors"
 
 	"git.apache.org/thrift.git/lib/go/thrift"
-	"github.com/akolb1/sentrytool/sentryapi/thrift/sentry_generic_policy_service"
+	"github.com/akolb1/sentrytool/sentryapi/thrift/gen-go/sentry_generic_policy_service"
 )
 
 // TMPGenericProtocolFactory is a multiplexing protocol factory
